@@ -8,7 +8,7 @@ python:
   - '2.7'
 before_install:
 install:
-  - docker run -ti mottosso/maya:2017 /bin/sh -c "cd /root"
+  - docker run -ti mottosso/maya:2016sp1 /bin/sh -c "cd /root"
   - pip install -r requirements.txt
   - pip install .[test]
 script:
