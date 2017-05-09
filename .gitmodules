@@ -1,0 +1,3 @@
+[submodule "rigger/vendor/cgLogging"]
+	path = rigger/vendor/cgLogging
+	url = https://github.com/asisudai/cg-logging.git
