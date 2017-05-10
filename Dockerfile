@@ -6,12 +6,13 @@ MAINTAINER andresmweber@gmail.com
 RUN echo alias hpython="\"/usr/autodesk/maya/bin/mayapy\"" >> ~/.bashrc && \
     echo alias hpip="\"mayapy -m pip\"" >> ~/.bashrc
 
-RUN wget https://bootstrap.pypa.io/get-pip.py
-RUN mayapy get-pip.py
-RUN rm get-pip.py
+# Install pip in Mayapy
+RUN wget https://bootstrap.pypa.io/get-pip.py && \
+    mayapy get-pip.py
+
 ADD . /Forge
-RUN /usr/autodesk/maya/bin/mayapy -m pip install -r /Forge/requirements.txt
-RUN /usr/autodesk/maya/bin/mayapy -m pip install /Forge
+RUN mayapy -m pip install -r /Forge/requirements.txt
+RUN mayapy -m pip install /Forge[test]
 RUN chmod -x $(find /Forge/tests/ -name '*.py')
 #ENTRYPOINT ["mayapy"]
 #CMD ["app.py"]

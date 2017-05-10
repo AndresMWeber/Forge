@@ -5,9 +5,6 @@ import forge
 
 ms.initialize(name='forge')
 
-setUp_count = 0
-tearDown_count = 0
-
 
 class TestControlRename(TestBase):
     def test_encapsulation(self):
