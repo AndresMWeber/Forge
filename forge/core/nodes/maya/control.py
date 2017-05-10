@@ -87,16 +87,18 @@ class MayaControl(MayaCurve):
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         :return: None
         """
-        forge.LOG.info('Renaming this control with kwargs %s' % str(kwargs))
-        forge.LOG.info('Renaming node %s->%s' % (self.node, self.nom.get(**kwargs)))
+        forge.LOG.debug('Renaming this control with kwargs %s' % str(kwargs))
+        forge.LOG.debug('Renaming control %s->%s' % (self.node, self.nom.get(**kwargs)))
         super(MayaControl, self).rename(**kwargs)
 
         if self.group_connection:
-            forge.LOG.info('Renaming node %s->%s' % (self.group_connection.node, self.group_connection.nom.get(**kwargs)))
+            forge.LOG.debug('Renaming control connection group %s->%s' %
+                            (self.group_connection.node, self.group_connection.nom.get(**kwargs)))
             self.group_connection.rename(**kwargs)
 
         if self.group_offset:
-            forge.LOG.info('Renaming node %s->%s' % (self.group_offset.node, self.group_offset.nom.get(**kwargs)))
+            forge.LOG.debug('Renaming control offset group %s->%s' %
+                            (self.group_offset.node, self.group_offset.nom.get(**kwargs)))
             self.group_offset.rename(**kwargs)
 
     def get_parent(self, level=0):

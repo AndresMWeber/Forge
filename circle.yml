@@ -12,9 +12,9 @@ dependencies:
 test:
   override:
     - docker run -it forge bash -c "mayapy -m nose /Forge/tests"
+  post:
+    - coveralls
 
 deployment:
   production:
     branch: master
-    commands:
-      - coveralls
