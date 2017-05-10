@@ -1,4 +1,3 @@
-
 def exception(logger):
     """
     A decorator that wraps the passed in function and logs

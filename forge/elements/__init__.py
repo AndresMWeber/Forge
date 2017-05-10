@@ -1,21 +1,3 @@
-__all__ = ['augmentors',
-           'universal',
-           'center_of_mass',
-           'biped_arm',
-           'quadruped_arm',
-           'biped_leg',
-           'quadruped_leg',
-           'digit',
-           'hand',
-           'spine',
-           'neck',
-           'head',
-           'mouth',
-           'facial_feature',
-           'eye',
-           'eyelid',
-           'augmentors']
-
 import universal
 import biped_arm
 import quadruped_arm
@@ -32,3 +14,20 @@ import eye
 import eyelid
 import center_of_mass
 import augmentors
+
+__all__ = ['universal',
+           'center_of_mass',
+           'biped_arm',
+           'quadruped_arm',
+           'biped_leg',
+           'quadruped_leg',
+           'digit',
+           'hand',
+           'spine',
+           'neck',
+           'head',
+           'mouth',
+           'facial_feature',
+           'eye',
+           'eyelid',
+           'augmentors']

@@ -1,7 +1,9 @@
 import maya.cmds as mc
 
+
 def zero_local_space(transform_dag, **kwargs):
     return mc.makeIdentity(transform_dag, **kwargs)
+
 
 def spatial_interpolate(start, end, samples):
     """ Interpolate between two points with a given number of samples
@@ -22,6 +24,7 @@ def spatial_interpolate(start, end, samples):
     mid_points.insert(0, [float(i) for i in start])
     mid_points.append([float(i) for i in end])
     return mid_points
+
 
 """ TODO: Need to refactor without numpy.
 def slerp_quaternion(p0, p1, t):

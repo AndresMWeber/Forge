@@ -11,11 +11,13 @@ from forge.settings import DEFAULT_TAG_ATTR
 
 utils = forge.registry.utils
 
+
 @forge.register_node
 class MayaNode(AbstractNode):
     """
          Wraps a dag_path with generic functions to manipulate a maya_utils node
     """
+
     def __init__(self, node_dag='', rename=False, parent='', **kwargs):
         super(MayaNode, self).__init__(node_dag, **kwargs)
         self._dag_path = self.get_dag_node(node_dag)
@@ -83,7 +85,6 @@ class MayaNode(AbstractNode):
         except RuntimeError:
             pass
         self.set_attr(attr, value)
-
 
     @exception(forge.LOG)
     def parent(self, target_parent, **kwargs):
