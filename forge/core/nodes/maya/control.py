@@ -1,6 +1,5 @@
-from forge.rig_lib.core.nodes.maya.curve import MayaCurve
-
 import forge
+from forge.core.nodes.maya.curve import MayaCurve
 from forge.core.channels import (VISIBILITY, LEVEL_PRIMARY, SCALE)
 
 

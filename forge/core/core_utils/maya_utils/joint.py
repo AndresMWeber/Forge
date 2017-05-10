@@ -1,5 +1,5 @@
 import nomenclate
-import pymel.core as pm
+# import pymel.core as pm
 
 import forge
 import transformation

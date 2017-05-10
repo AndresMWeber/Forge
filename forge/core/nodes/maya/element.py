@@ -1,5 +1,5 @@
 import forge
-from forge.core.nodes import AbstractElement
+from forge.core.nodes.base.element import AbstractElement
 
 
 @forge.register_node

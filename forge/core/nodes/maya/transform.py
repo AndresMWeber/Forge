@@ -1,6 +1,6 @@
 import maya.cmds as mc
-from forge.rig_lib.core.nodes.base.transform import AbstractTransform
-from forge.rig_lib.core.nodes.maya.node import MayaNode
+from forge.core.nodes.base.transform import AbstractTransform
+from forge.core.nodes.maya.node import MayaNode
 
 import forge
 from forge.core import channels

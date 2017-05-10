@@ -1,8 +1,8 @@
 from itertools import chain
 
 import maya.cmds as mc
-from forge.rig_lib.core.core_utils.maya_utils import curve as util_curve
-from forge.rig_lib.core.nodes.base.curve import AbstractCurve
+from forge.core.core_utils.maya_utils import curve as util_curve
+from forge.core.nodes.base.curve import AbstractCurve
 
 import forge
 from forge.core.nodes.maya.transform import MayaTransform

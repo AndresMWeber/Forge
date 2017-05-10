@@ -1,0 +1,19 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+    override:
+      - pip install docker-compose
+    pre:
+      - docker build --rm=false -t forge .
+
+test:
+  override:
+    - docker run -it forge bash -c "mayapy -m nose /Forge/tests"
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - echo master

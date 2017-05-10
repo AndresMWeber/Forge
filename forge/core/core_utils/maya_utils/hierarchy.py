@@ -1,8 +1,10 @@
-import pymel.core as pm
+# import pymel.core as pm
 import maya.cmds as mc
+
 
 def list_relatives(node, **kwargs):
     return mc.listRelatives(node, **kwargs)
+
 
 def shortest_name(name):
     return name.rpartition('|')[-1].rpartition(':')[-1]

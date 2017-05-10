@@ -1,8 +1,8 @@
 import maya.api.OpenMaya as oM
 import maya.cmds as mc
 import simplejson
-from forge.rig_lib.core import colors
-from forge.rig_lib.core.nodes.base.node import AbstractNode
+from forge.core import colors
+from forge.core.nodes.base.node import AbstractNode
 
 import forge
 from forge.core import channels
