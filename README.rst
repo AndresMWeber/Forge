@@ -5,8 +5,8 @@ Forge: Just another autorigger
 .. image:: https://badge.fury.io/py/Forge.svg
     :target: https://badge.fury.io/py/Forge
 
-.. image:: https://travis-ci.org/AndresMWeber/Forge.svg?branch=master
-    :target: https://travis-ci.org/AndresMWeber/forge
+.. image:: https://circleci.com/gh/AndresMWeber/Forge.svg?style=shield&circle-token=:circle-token
+    :target: https://circleci.com/gh/AndresMWeber/Forge/
 
 .. image:: https://coveralls.io/repos/github/AndresMWeber/forge/badge.svg?branch=master
     :target: https://coveralls.io/github/AndresMWeber/Forge?branch=master
