@@ -43,5 +43,5 @@ class TestBase(unittest.TestCase):
                     for fix in mc.ls(fixture):
                         mc.delete(fix)
         tearDown_count += 1
-        mc.quit()
-        ms.uninitialize()
+        #mc.quit()
+        #ms.uninitialize()

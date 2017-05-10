@@ -46,9 +46,9 @@ class Registry(object):
         return mc.joint(*args, **kwargs)
 
     @staticmethod
-    def maya_group(*args, **kwargs):
+    def maya_group(em=True, *args, **kwargs):
         accepted_kwargs = []
-        return mc.group(*args, **kwargs)
+        return mc.group(em=em)
 
     @staticmethod
     def maya_curve(control_shape='cube', name='control'):
