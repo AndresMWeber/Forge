@@ -22,7 +22,8 @@ class TestTransformRename(TestBase):
 
 class TestTransformDelete(TestBase):
     def test_encapsulation(self):
-        transform = forge.registry.MayaTransform('test')
+        mc.group(n='this_has_no_name')
+        transform = forge.registry.MayaTransform('this_has_no_name')
         transform.rename(name='blame', side='right')
         self.assertTrue(transform.exists)
         transform.delete()
@@ -40,9 +41,11 @@ class TestTransformDelete(TestBase):
 class TestTransformProperties(TestBase):
     def setUp(self):
         super(TestTransformProperties, self).setUp()
-        self.transform = forge.registry.MayaTransform(self.test_group, name=str(self.test_group))
-        self.transform_par = forge.registry.MayaTransform(self.test_group_parent, name=str(self.test_group_parent))
-
+        self.transform = forge.registry.MayaTransform(self.test_group)
+        self.transform_par = forge.registry.MayaTransform(self.test_group_parent)
+        self.transform.rename(name='test')
+        self.transform_par.rename(name='test_parent')
+        self.transform.parent(self.transform_par)
         self.fixtures.append(self.transform.name_long)
         self.fixtures.append(self.transform_par.name_long)
 
@@ -86,12 +89,12 @@ class TestTransformProperties(TestBase):
         self.assertEquals(self.transform.t, [0.0] * 3)
 
     def test_name_long(self):
-        self.assertEquals(self.transform.name_long, '|test_parent|test')
+        self.assertEquals(self.transform.name_long, '|test_parent_GRP|test_GRP')
 
-    def test_name_long_duplicate_name(self):
-        mc.duplicate(self.test_group_parent)
-        self.fixtures.append(self.test_group_parent + '1')
-        self.assertEquals(self.transform.name_long, '|test_parent|test')
+    def test_name_long_duplicate_name_exists(self):
+        mc.duplicate(self.transform_par)
+        self.fixtures.append(self.transform_par.name(short=True) + '1')
+        self.assertEquals(self.transform.name_long, '|test_parent_GRP|test_GRP')
 
     def test_exists_true(self):
         self.assertTrue(self.transform.exists)

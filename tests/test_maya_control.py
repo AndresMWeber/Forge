@@ -29,8 +29,8 @@ class TestControlRename(TestBase):
         self.fixtures.append(control.name_long)
 
     def test_double_creation(self):
-        controlA = forge.registry.control.create(cls='right', name='bert', purpose='killer', childtype='meth')
-        controlB = forge.registry.control.create(cls='right', name='bert', purpose='killer', childtype='meth')
+        controlA = forge.registry.control.create(side='right', name='bert', purpose='killer', childtype='meth')
+        controlB = forge.registry.control.create(side='right', name='bert', purpose='killer', childtype='meth')
 
         self.assertTrue(controlA.name_short, 'r_blame_CTR')
         self.assertTrue(controlB.name_short, 'r_blame_CTR')
