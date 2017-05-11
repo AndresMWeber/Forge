@@ -20,7 +20,7 @@ class MayaControl(MayaCurve):
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         :return: MayaControl
         """
-        print ('initialized with kwargs ', node_dag, control_offset_grp, control_con_grp)
+        forge.LOG.debug('initialized with kwargs ', node_dag, control_offset_grp, control_con_grp)
         super(MayaControl, self).__init__(node_dag=node_dag, **kwargs)
 
         self.group_offset = None
