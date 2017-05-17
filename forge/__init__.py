@@ -42,5 +42,5 @@ def log_function_call(func):
     def wrapped(instance):
         LOG.info('Running test %s' % func.__name__)
         return func(instance)
-    wrapped.__name__ = func.__name__+'_logoutput'
+    wrapped.__name__ = func.__name__
     return wrapped

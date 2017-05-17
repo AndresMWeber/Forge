@@ -54,12 +54,13 @@ class MayaCurve(MayaTransform, AbstractCurve):
         :return: None
         """
         if not add:
-            mc.delete(self.get_shapes(types=self.ENGINE_TYPE))
+            mc.delete(self.get_shapes(types=MayaCurve.ENGINE_TYPE))
 
         target_shape = forge.registry.curve(getattr(forge.shapes, shape)())
-        shapes = target_shape.get_children(type=self.ENGINE_TYPE)
+        shapes = target_shape.get_children(type=MayaCurve.ENGINE_TYPE)
+        print('Shapes to reparent...', [shape.node for shape in shapes])
         mc.parent([shape.node for shape in shapes], self.node, relative=not maintain_offset, shape=True)
-
+        print('New parents: ', [shape.get_parent() for shape in shapes])
         if maintain_offset:
             for shape in shapes:
                 parent = shape.get_parent()

@@ -2,6 +2,7 @@ import unittest
 import maya.standalone as ms
 import maya.cmds as mc
 import forge
+from pprint import pformat
 
 ms.initialize(name='forge')
 
@@ -14,9 +15,9 @@ class TestBase(unittest.TestCase):
         print('Initializing maya_utils standalone...')
 
         global setUp_count
-        print 'setup has run %d times.' % setUp_count
-        print 'current state of scene: '
-        print(mc.ls(type='transform'))
+        forge.LOG.info('setup has run %d times.' % setUp_count)
+        forge.LOG.info('setUp-Start state of scene: ')
+        forge.LOG.info(pformat(forge.registry.utils.scene.get_scene_tree()))
 
         self.fixtures = []
         test_parent_grp = 'test_parent'
@@ -28,14 +29,14 @@ class TestBase(unittest.TestCase):
 
         self.fixtures.append(self.test_group)
         self.fixtures.append(self.test_group_parent)
-        print 'current state of scene after creation: '
-        print(mc.ls(type='transform'))
-        print self.fixtures
+        forge.LOG.info('state of scene after initial node creation: ')
+        forge.LOG.info(pformat(forge.registry.utils.scene.get_scene_tree()))
+        forge.LOG.info('Registered nodes %s' % self.fixtures)
         setUp_count += 1
 
     def tearDown(self):
         global tearDown_count
-        print 'Tearing down!! (deleting all nodes, quitting maya and uninitializing maya standalone'
+        forge.LOG.info('Tearing down!! Deleting all nodes...')
         if self.fixtures:
             self.fixtures = [fixture for fixture in self.fixtures if mc.objExists(fixture)]
             for fixture in self.fixtures:

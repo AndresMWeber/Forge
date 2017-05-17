@@ -1,4 +1,5 @@
 import forge
+import maya.cmds as mc
 from forge.core.nodes.maya.curve import MayaCurve
 from forge.core.channels import (VISIBILITY, LEVEL_PRIMARY, SCALE)
 
@@ -52,6 +53,7 @@ class MayaControl(MayaCurve):
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         :return: MayaControl
         """
+        previous_nodes = set(mc.ls(type='transform'))
         forge.LOG.debug('Creating a control with parent %r' % parent)
 
         node_dag = super(MayaControl, cls).create(**kwargs)
@@ -71,7 +73,11 @@ class MayaControl(MayaCurve):
         control_instance.group_connection.parent(control_instance)
         control_instance.parent(parent)
 
+        created_nodes = set(mc.ls(type='transform'))
+        forge.LOG.info('CREATED NODES C %s' % (created_nodes - previous_nodes))
         control_instance.swap_shape(shape=shape)
+        created_nodes = set(mc.ls(type='transform'))
+        forge.LOG.info('CREATED NODES D %s' % (created_nodes - previous_nodes))
         control_instance.lock_channels(lock_channelbox)
         control_instance.scale_shapes(scale)
 
@@ -88,18 +94,14 @@ class MayaControl(MayaCurve):
         :return: None
         """
         forge.LOG.debug('Renaming this control with kwargs %s' % str(kwargs))
-        forge.LOG.debug('Renaming control %s->%s' % (self.node, self.nom.get(**kwargs)))
-        super(MayaControl, self).rename(**kwargs)
+        self.nom.merge_dict(kwargs)
+        super(MayaControl, self).rename()
 
         if self.group_connection:
-            forge.LOG.debug('Renaming control connection group %s->%s' %
-                            (self.group_connection.node, self.group_connection.nom.get(**kwargs)))
-            self.group_connection.rename(**kwargs)
+            self.group_connection.rename(**self.nom.state)
 
         if self.group_offset:
-            forge.LOG.debug('Renaming control offset group %s->%s' %
-                            (self.group_offset.node, self.group_offset.nom.get(**kwargs)))
-            self.group_offset.rename(**kwargs)
+            self.group_offset.rename(**self.nom.state)
 
     def get_parent(self, level=0):
         if self.group_offset:

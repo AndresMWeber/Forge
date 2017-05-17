@@ -49,21 +49,21 @@ class AbstractElement(object):
 
     @classmethod
     def create(cls, **kwargs):
-        forge.LOG.debug('Creating AbstractElement, kwargs %s' % (pformat(kwargs, depth=1)))
-        forge.LOG.debug('Creating hierarchy...')
+        forge.LOG.info('Creating AbstractElement, kwargs %s' % (pformat(kwargs, depth=1)))
+        forge.LOG.info('Creating hierarchy...')
         kwargs.update(cls._create_hierarchy(**kwargs))
-        forge.LOG.debug('Creating joints...')
+        forge.LOG.info('Creating joints...')
         kwargs.update(cls._create_joints(**kwargs))
-        forge.LOG.debug('Creating controls...')
+        forge.LOG.info('Creating controls...')
         kwargs.update(cls._create_controls(**kwargs))
 
         element_instance = cls(**kwargs)
-        forge.LOG.debug('Setting up connections...')
+        forge.LOG.info('Setting up connections...')
         element_instance.setup_connections()
-        forge.LOG.debug('Renaming all child nodes...')
+        forge.LOG.info('Renaming all child nodes...')
         element_instance.rename()
 
-        forge.LOG.debug('Finished creating MayaElement %s' % pformat(element_instance.serialize()))
+        forge.LOG.info('Finished creating AbstractElement %s' % pformat(element_instance.serialize()))
         return element_instance
 
     @property
@@ -201,13 +201,13 @@ class AbstractElement(object):
 
     def serialize(self):
         flattened_data = {}
-        for k, v in iteritems({register_type: self.__getattribute__(register_type) for register_type in self.REGISTER_TYPES}):
+        for k, v in iteritems({register_type: getattr(self, register_type) for register_type in self.REGISTER_TYPES}):
             if isinstance(v, list):
                 for item in v:
                     try:
-                        flattened_data[item] = self.__getattribute__(item).serialize()
+                        flattened_data[item] = getattr(self, item).serialize()
                     except AttributeError:
-                        flattened_data[item] = str(self.__getattribute__(item)).decode('utf-8')
+                        flattened_data[item] = str(getattr(self, item)).decode('utf-8')
             else:
                 flattened_data[k] = v if type(v) in forge.settings.SERIALIZABLE_TYPES else str(v).decode("utf-8")
 

@@ -31,6 +31,7 @@ class Universal(forge.registry.element):
         self.nom.childtype = 'universalB'
         self.control_global_B.rename(**self.nom.state)
 
+
         self.nom.childtype=original_childtype
 
     @classmethod

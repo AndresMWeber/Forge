@@ -3,6 +3,7 @@ import maya.standalone as ms
 import maya.cmds as mc
 import forge
 import json
+from pprint import pformat
 
 ms.initialize(name='forge')
 
@@ -56,15 +57,19 @@ class TestUniversalRename(TestBase):
 
     @forge.log_function_call
     def test_creation_serialization(self):
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
         universal = forge.registry.Universal.create(side='left')
         universal.imprint_serialization()
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
         self.assertEquals(universal.group_top.get_attr('forge'), json.loads(json.dumps(universal.serialize())))
 
     @forge.log_function_call
     def test_creation_serialization_encapsulation(self):
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
         universal = forge.registry.Universal.create(side='left')
         universal.imprint_serialization()
         universal_other = forge.registry.Universal.factory(universal.group_top.get_attr('forge'))
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
         self.assertEquals(universal, universal_other)
 
     @forge.log_function_call

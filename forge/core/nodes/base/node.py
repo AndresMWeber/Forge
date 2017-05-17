@@ -51,13 +51,15 @@ class AbstractNode(object):
         nom_defaults.update(kwargs)
         self.nom.merge_dict(nom_defaults)
         self.nom.type = self.TYPE
-
-        new_name = self.nom.get(**kwargs)
-        forge.registry.utils.scene.rename(self._dag_path, self.nom.get(**kwargs))
+        forge.LOG.debug('Renaming node \"%s\" with state:\n\t%s' % (self.node, self.nom.state))
+        orig_name = self.node
+        new_name = self.nom.get()
+        forge.registry.utils.scene.rename(self._dag_path, new_name)
 
         if new_name != self.name_short:
-            forge.LOG.debug("Could not rename node to %s due to clash, it's now %s" % (new_name, self.name_short))
+            forge.LOG.debug("Could not rename %s -> %s -> %s due to clash" % (orig_name, new_name, self.name_short))
 
+        forge.LOG.debug('Renamed %s -> %s' % (orig_name, self.name_short))
         return self.name_short
 
     def attr_exists(self, attr):
