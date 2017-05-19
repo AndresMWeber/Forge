@@ -13,8 +13,9 @@ class Universal(forge.registry.element):
         scale = float(scale)  # Ensuring we cast back to float in case it was serialized
         kwargs['name'] = kwargs.get('name', 'universal')
         super(Universal, self).__init__(**kwargs)
-        self.control_global_A = forge.registry.control.factory(control_global_A, scale=scale)
-        self.control_global_B = forge.registry.control.factory(control_global_B, scale=scale * .8)
+        forge.LOG.info('Initializing Universal with kwargs %s and controls: %r %r' % (kwargs, control_global_A, control_global_B))
+        self.control_global_A = forge.registry.control.factory(node_dag=control_global_A, scale=scale)
+        self.control_global_B = forge.registry.control.factory(node_dag=control_global_B, scale=scale * .8)
         self.register_nodes(['control_global_B', 'control_global_A'], node_type=settings.CONTROL_TYPE)
 
     def setup_connections(self):

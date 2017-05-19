@@ -167,6 +167,9 @@ class AbstractElement(object):
     def _layout_guide_controls(self):
         raise NotImplementedError
 
+    def class_rep(self):
+        return str(self.__class__).split("'")[1]
+
     def rename(self, **kwargs):
         original_childtype = self.nom.childtype.label
 
@@ -211,7 +214,7 @@ class AbstractElement(object):
             else:
                 flattened_data[k] = v if type(v) in forge.settings.SERIALIZABLE_TYPES else str(v).decode("utf-8")
 
-        return flattened_data
+        return {self.class_rep(): flattened_data}
 
     @classmethod
     def factory(cls,

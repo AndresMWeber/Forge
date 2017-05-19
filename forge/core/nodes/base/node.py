@@ -157,8 +157,11 @@ class AbstractNode(object):
         except AttributeError:
             return self.node == str(other)
 
+    def class_rep(self):
+        return str(self.__class__).split("'")[1]
+
     def serialize(self):
-        return {'node_dag': self.node}
+        return {self.class_rep(): {'node_dag': self.node}}
 
     def from_serial(self, serialization):
         return self.factory(**serialization)

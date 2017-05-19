@@ -86,9 +86,7 @@ class AbstractControl(AbstractCurve):
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         :return: None
         """
-        forge.LOG.info('Renaming this control with kwargs %s' % str(kwargs))
-        print self.INTERNAL_TYPE
-        print type(self)
+        forge.LOG.debug('Renaming this control with kwargs %s' % str(kwargs))
         self.nom.merge_dict(kwargs)
         super(AbstractControl, self).rename(**self.nom.state)
 
@@ -141,7 +139,7 @@ class AbstractControl(AbstractCurve):
                        **kwargs)
 
     def serialize(self):
-        return {'node_dag': super(AbstractControl, self).serialize()['node_dag'],
-                'control_offset_grp': self.group_offset.serialize(),
-                'control_con_grp': self.group_connection.serialize(),
-                'scale': self.scale}
+        return {self.class_rep(): {'node_dag': super(AbstractControl, self).serialize(),
+                                   'control_offset_grp': self.group_offset.serialize(),
+                                   'control_con_grp': self.group_connection.serialize(),
+                                   'scale': self.scale}}
