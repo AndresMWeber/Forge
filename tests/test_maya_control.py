@@ -1,4 +1,4 @@
-from .base_test import TestBase
+from base_test import TestBase
 import maya.standalone as ms
 import maya.cmds as mc
 import forge
@@ -12,7 +12,12 @@ class TestControlRename(TestBase):
         top = mc.group(em=True)
         conn = mc.group(em=True)
 
-        control = forge.registry.MayaControl(crv, top, conn, rename=True, name='blame', side='left')
+        control = forge.registry.control(node_dag=crv,
+                                         control_offset_grp=top,
+                                         control_con_grp=conn,
+                                         rename=True,
+                                         name='blame',
+                                         side='left')
 
         self.assertEquals(control.name_short, 'l_blame_CTR')
         self.assertEquals(control.group_offset.name_short, 'l_blame_OGP')

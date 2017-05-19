@@ -7,7 +7,7 @@ class AbstractJoint(transform.AbstractTransform):
     """
     class for building templates control
     """
-    TYPE = 'joint'
+    INTERNAL_TYPE = 'joint'
     NAME_DEFAULTS = {'name': 'untitled', 'var': 'A'}
 
     def __init__(self, node_dag='', *args, **kwargs):

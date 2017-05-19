@@ -6,7 +6,8 @@ utils = forge.registry.utils
 
 @forge.register_node
 class AbstractNode(object):
-    TYPE = 'node'
+    INTERNAL_TYPE = 'node'
+    ENGINE_TYPE = None
     NAME_DEFAULTS = {'name': 'untitled'}
     _char_hierarchy = '|'
     _char_namespace = ':'
@@ -50,7 +51,7 @@ class AbstractNode(object):
         nom_defaults = self.NAME_DEFAULTS.copy()
         nom_defaults.update(kwargs)
         self.nom.merge_dict(nom_defaults)
-        self.nom.type = self.TYPE
+        self.nom.type = self.INTERNAL_TYPE
         forge.LOG.debug('Renaming node \"%s\" with state:\n\t%s' % (self.node, self.nom.state))
         orig_name = self.node
         new_name = self.nom.get()

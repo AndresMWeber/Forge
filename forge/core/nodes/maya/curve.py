@@ -13,8 +13,13 @@ class MayaCurve(MayaTransform, AbstractCurve):
     """
     class for building templates control
     """
-    TYPE = 'nurbs_curve'
+    INTERNAL_TYPE = 'nurbs_curve'
     ENGINE_TYPE = 'nurbsCurve'
+
+    @staticmethod
+    def create_engine_instance(node_type='group', *args, **kwargs):
+        # Default Diamond shape.
+        return forge.registry.maya_curve(d=1, p=[(1,0,0),(0,0,-1),(-1,0,0),(0,0,1), (1,0,0)])
 
     def __init__(self, node_dag='', *args, **kwargs):
         super(MayaCurve, self).__init__(node_dag=node_dag, *args, **kwargs)

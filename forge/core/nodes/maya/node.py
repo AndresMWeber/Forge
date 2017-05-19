@@ -17,6 +17,7 @@ class MayaNode(AbstractNode):
     """
          Wraps a dag_path with generic functions to manipulate a maya_utils node
     """
+    ENGINE_TYPE = 'group'
 
     def __init__(self, node_dag='', rename=False, parent='', **kwargs):
         super(MayaNode, self).__init__(node_dag, **kwargs)
@@ -30,7 +31,7 @@ class MayaNode(AbstractNode):
 
     @staticmethod
     def create_engine_instance(*args, **kwargs):
-        node = forge.registry.group(em=True, *args, **kwargs)
+        node = forge.registry.maya_group(*args, **kwargs)
         return node
 
     @staticmethod

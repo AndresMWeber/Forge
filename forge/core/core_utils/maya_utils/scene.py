@@ -5,7 +5,7 @@ def get_scene_tree():
     startup_cams = [mc.listRelatives(c, p=True)[0] for c in mc.ls(cameras=True)
                     if mc.camera(c, q=True, startupCamera=True)]
 
-    top_level_transforms = [node.split('|')[-1] for node in mc.ls(assemblies=True)
+    top_level_transforms = [node for node in mc.ls(assemblies=True)
                             if node not in startup_cams]
 
     def recurse_scene_nodes(nodes, tree=None):

@@ -19,7 +19,7 @@ class MayaTransform(MayaNode, AbstractTransform):
     @staticmethod
     def create_engine_instance(node_type='group', *args, **kwargs):
         if node_type in ['group']:
-            node = forge.registry.maya_group(em=True, *args, **kwargs)
+            node = forge.registry.maya_group(*args, **kwargs)
         elif node_type in ['locator']:
             node = forge.registry.maya_locator(*args, **kwargs)
         else:

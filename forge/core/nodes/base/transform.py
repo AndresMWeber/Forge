@@ -9,7 +9,7 @@ class AbstractTransform(node.AbstractNode):
     """
         Base Class for manipulating transforms of a given node.
     """
-    TYPE = 'group'
+    INTERNAL_TYPE = 'group'
 
     def __init__(self, node_dag='', *args, **kwargs):
         super(AbstractTransform, self).__init__(node_dag=node_dag, **kwargs)
