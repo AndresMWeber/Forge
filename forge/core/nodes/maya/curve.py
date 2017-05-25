@@ -19,7 +19,7 @@ class MayaCurve(MayaTransform, AbstractCurve):
     @staticmethod
     def create_engine_instance(node_type='group', *args, **kwargs):
         # Default Diamond shape.
-        return forge.registry.maya_curve(d=1, p=[(1,0,0),(0,0,-1),(-1,0,0),(0,0,1), (1,0,0)])
+        return forge.registry.maya_curve()
 
     def __init__(self, node_dag='', *args, **kwargs):
         super(MayaCurve, self).__init__(node_dag=node_dag, *args, **kwargs)

@@ -57,6 +57,7 @@ class AbstractElement(object):
         forge.LOG.info('Creating controls...')
         kwargs.update(cls._create_controls(**kwargs))
 
+        forge.LOG.info('Finally Initializing instance with kwargs: %s' % kwargs)
         element_instance = cls(**kwargs)
         forge.LOG.info('Setting up connections...')
         element_instance.setup_connections()

@@ -27,6 +27,7 @@ class AbstractControl(AbstractCurve):
         self.scale = float(scale)  # Ensuring we cast back to float in case it was serialized
 
         if control_offset_grp:
+            print 'working with control offset group input: ', control_offset_grp
             self.group_offset = forge.registry.transform.factory(control_offset_grp)
             self.group_offset.INTERNAL_TYPE = 'offset_group'
 
@@ -139,7 +140,8 @@ class AbstractControl(AbstractCurve):
                        **kwargs)
 
     def serialize(self):
-        return {self.class_rep(): {'node_dag': super(AbstractControl, self).serialize(),
-                                   'control_offset_grp': self.group_offset.serialize(),
-                                   'control_con_grp': self.group_connection.serialize(),
-                                   'scale': self.scale}}
+        return {self.__class__.__name__: {
+            'node_dag': self.name_long,
+            'control_offset_grp': self.group_offset.serialize(),
+            'control_con_grp': self.group_connection.serialize(),
+            'scale': self.scale}}

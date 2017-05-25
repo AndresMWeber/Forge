@@ -4,6 +4,7 @@ from forge.core.nodes.base.element import AbstractElement
 
 @forge.register_node
 class MayaElement(AbstractElement):
+
     def _layout_guide_cleanup(self):
         raise NotImplementedError
 

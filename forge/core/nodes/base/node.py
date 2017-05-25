@@ -1,5 +1,6 @@
 import nomenclate
 import forge
+from six import iteritems
 
 utils = forge.registry.utils
 
@@ -14,6 +15,7 @@ class AbstractNode(object):
     _char_attr = '.'
 
     def __init__(self, node_dag='', **kwargs):
+        forge.LOG.info('Initializing a node with node_dag %r and kwargs %s' % (node_dag, kwargs))
         self.nom = nomenclate.Nom()
         self.validate_node(node_dag)
         self._dag_path = node_dag
@@ -157,11 +159,43 @@ class AbstractNode(object):
         except AttributeError:
             return self.node == str(other)
 
-    def class_rep(self):
-        return str(self.__class__).split("'")[1]
-
     def serialize(self):
-        return {self.class_rep(): {'node_dag': self.node}}
+        return {self.__class__.__name__: {'node_dag': self.node}}
 
-    def from_serial(self, serialization):
-        return self.factory(**serialization)
+    @classmethod
+    def from_serial(cls, serialization):
+        """ Only supports one node from the serialization...might have to refactor.  It has a for loop just to 
+            enumerate for now.
+        
+        :param serialization: {str: dict}, dictionary 
+        :return: AbstractNode
+        """
+        for class_id, class_kwargs in iteritems(serialization):
+            forge.LOG.info('Reading data from serialization: %s: %s\nto instantiate node of type %s' %
+                           (class_id, class_kwargs, cls.__name__))
+            for k, v in iteritems(class_kwargs):
+                if isinstance(v, dict) and forge.registry.get_class_by_id(k):
+                    forge.LOG.info('Detected nested serialization, rebuilding node...')
+                    class_kwargs[k] = forge.registry.get_class_by_id(k).from_serial(v)
+
+            return forge.registry.get_class_by_id(class_id).factory(**class_kwargs)
+
+    def __resolve_serializations(self, serialization):
+
+        fields_found = []
+
+        for key, value in iteritems(search_dict):
+            if isinstance(value, dict):
+                if forge.registry.get_class_by_id(value):
+                    serialization[key] = forge.registry.get_class_by_id(key).from_serial(value)
+
+                serialization[key] = self.__resolve_serializations(value)
+
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, dict):
+                        more_results = self.__resolve_serializations(item, field)
+                        for another_result in more_results:
+                            fields_found.append(another_result)
+
+        return fields_found

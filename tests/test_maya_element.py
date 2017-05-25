@@ -6,14 +6,21 @@ import forge
 ms.initialize(name='forge')
 
 
-class TestElementRename(TestBase):
+class TestBaseElement(TestBase):
+    @staticmethod
+    def encapsulation_node_creation():
+        return {'group_top': forge.registry.maya_group(),
+                'group_model': forge.registry.maya_group(),
+                'group_joint': forge.registry.maya_group(),
+                'group_controls': forge.registry.maya_group(),
+                'group_nodes': forge.registry.maya_group(),
+                'group_world': forge.registry.maya_group()
+                }
+
+
+class TestElementRename(TestBaseElement):
     def test_encapsulation(self):
-        element = forge.registry.MayaElement(forge.registry.maya_group(),
-                                             forge.registry.maya_group(),
-                                             forge.registry.maya_group(),
-                                             forge.registry.maya_group(),
-                                             forge.registry.maya_group(),
-                                             forge.registry.maya_group())
+        element = forge.registry.MayaElement(**self.encapsulation_node_creation())
         element.rename(name='blame', side='right')
         self.assertTrue(element.group_top.name_short, 'r_blame_GRP')
         self.fixtures.extend([node.node for node in element.hierarchy if hasattr(node, 'node')])
@@ -26,7 +33,7 @@ class TestElementRename(TestBase):
         print(element.hierarchy)
 
 
-class TestElementDel(TestBase):
+class TestElementDel(TestBaseElement):
     @forge.log_function_call
     def test_delete(self):
         universal = forge.registry.Universal.create(side='left')
