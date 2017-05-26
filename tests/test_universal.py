@@ -25,14 +25,14 @@ class TestBaseUniversal(TestBase):
 class TestUniversalCreation(TestBaseUniversal):
     @forge.log_function_call
     def test_encapsulation(self):
-        universal = forge.registration.Universal(**self.encapsulation_node_creation())
+        universal = forge.registry.Universal(**self.encapsulation_node_creation())
         universal.rename(name='blame', side='right')
         self.assertTrue(universal.group_top.name_short, 'r_blame_GRP')
         self.fixtures.extend([node.node for node in universal.flat_hierarchy])
 
     @forge.log_function_call
     def test_creation(self):
-        universal = forge.registration.Universal.create(name='base', side='left')
+        universal = forge.registry.Universal.create(name='base', side='left')
         self.assertEquals(universal.group_top.name_short, 'l_base_GRP')
         universal.rename(name='blame')
         self.assertEquals(universal.group_top.name_short, 'l_blame_GRP')
@@ -40,7 +40,7 @@ class TestUniversalCreation(TestBaseUniversal):
 
     @forge.log_function_call
     def test_creation_hierarchy(self):
-        universal = forge.registration.Universal.create(side='left')
+        universal = forge.registry.Universal.create(side='left')
 
         self.assertIsNone(universal.group_top.get_parent())
 
@@ -63,41 +63,41 @@ class TestUniversalCreation(TestBaseUniversal):
 class TestUniversalSerialize(TestBaseUniversal):
     @forge.log_function_call
     def test_creation_serialization(self):
-        forge.LOG.info('\n%s' % pformat(forge.registration.utils.scene.get_scene_tree()))
-        universal = forge.registration.Universal.create(side='left')
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
+        universal = forge.registry.Universal.create(side='left')
         universal.imprint_serialization()
-        forge.LOG.info('\n%s' % pformat(forge.registration.utils.scene.get_scene_tree()))
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
         self.assertEquals(universal.group_top.get_attr('forge'), json.loads(json.dumps(universal.serialize())))
 
     @forge.log_function_call
     def test_creation_serialization_encapsulation(self):
-        forge.LOG.info('\n%s' % pformat(forge.registration.utils.scene.get_scene_tree()))
-        universal = forge.registration.Universal(**self.encapsulation_node_creation())
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
+        universal = forge.registry.Universal(**self.encapsulation_node_creation())
         universal.imprint_serialization()
-        universal_other = forge.registration.Universal.factory(universal.group_top.get_attr('forge'))
-        forge.LOG.info('\n%s' % pformat(forge.registration.utils.scene.get_scene_tree()))
+        universal_other = forge.registry.Universal.factory(universal.group_top.get_attr('forge'))
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
         self.assertEquals(universal, universal_other)
 
 
 class TestUniversalFromSerial(TestBaseUniversal):
     def test_encapsulation(self):
-        universal = forge.registration.Universal(**self.encapsulation_node_creation())
+        universal = forge.registry.Universal(**self.encapsulation_node_creation())
         universal.rename(name='blame', side='right', childtype='fucker')
-        self.assertEquals(forge.registration.MayaTransform.from_serial(universal.serialize()), universal)
+        self.assertEquals(forge.registry.MayaTransform.from_serial(universal.serialize()), universal)
 
     def test_creation(self):
-        universal = forge.registration.Universal.create(name='name', side='left', childtype='fucker')
-        self.assertEquals(forge.registration.MayaTransform.from_serial(universal.serialize()), universal)
+        universal = forge.registry.Universal.create(name='name', side='left', childtype='fucker')
+        self.assertEquals(forge.registry.MayaTransform.from_serial(universal.serialize()), universal)
 
 
 class TestUniversalRename(TestBaseUniversal):
     def test_encapsulation(self):
-        universal = forge.registration.Universal(**self.encapsulation_node_creation())
+        universal = forge.registry.Universal(**self.encapsulation_node_creation())
         universal.rename(name='john')
         self.assertEquals('blah', universal.group_top)
 
     def test_creation(self):
-        universal = forge.registration.Universal.create(name='name', side='left', childtype='fucker')
+        universal = forge.registry.Universal.create(name='name', side='left', childtype='fucker')
         universal.rename(name='john')
         self.assertEquals('blah', universal.group_top)
 
@@ -105,14 +105,14 @@ class TestUniversalRename(TestBaseUniversal):
 class TestUniversalDelete(TestBaseUniversal):
     @forge.log_function_call
     def test_creation(self):
-        universal = forge.registration.Universal(**self.encapsulation_node_creation())
+        universal = forge.registry.Universal(**self.encapsulation_node_creation())
         nodes = list(universal.yield_nodes)
         del universal
         self.assertFalse(all([mc.objExists(node) for node in nodes]))
 
     @forge.log_function_call
     def test_encapsulation(self):
-        universal = forge.registration.Universal.create(side='left')
+        universal = forge.registry.Universal.create(side='left')
         nodes = list(universal.yield_nodes)
         del universal
         self.assertFalse(all([mc.objExists(node) for node in nodes]))

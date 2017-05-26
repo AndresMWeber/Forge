@@ -76,11 +76,11 @@ class TestControlFromSerial(TestBaseControl):
     def test_encapsulation(self):
         control = forge.registry.control(**self.encapsulation_node_creation())
         control.rename(name='blame', side='right', childtype='fucker')
-        self.assertEquals(forge.registration.control.from_serial(control.serialize()),
+        self.assertEquals(forge.registry.control.from_serial(control.serialize()),
                           control)
 
     def test_creation(self):
         control = forge.registry.control.create(name='name', side='left', childtype='fucker')
         control.rename(name='blame')
-        self.assertEquals(forge.registration.control.from_serial(control.serialize()),
+        self.assertEquals(forge.registry.control.from_serial(control.serialize()),
                           control)

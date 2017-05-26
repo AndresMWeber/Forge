@@ -43,11 +43,11 @@ class TwistInterpolators(forge.registry.Element):
 
         if source_joints:
             for parent_joint in source_joints:
-                parent_joint = forge.registration.joint.factory(parent_joint)
-                parent_joint_first_child = forge.registration.joint.factory(parent_joint.get_children(type='joint')[0])
-                twist_parent_joint = forge.registration.joint.factory(utils.scene.duplicate(parent_joint,
+                parent_joint = forge.registry.joint.factory(parent_joint)
+                parent_joint_first_child = forge.registry.joint.factory(parent_joint.get_children(type='joint')[0])
+                twist_parent_joint = forge.registry.joint.factory(utils.scene.duplicate(parent_joint,
                                                                                             po=True))
-                twist_child_joint = forge.registration.joint.factory(utils.scene.duplicate(parent_joint_first_child,
+                twist_child_joint = forge.registry.joint.factory(utils.scene.duplicate(parent_joint_first_child,
                                                                                            po=True))
 
                 for twist_joint in [twist_parent_joint, twist_child_joint]:
