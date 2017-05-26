@@ -18,9 +18,9 @@ class TestBaseControl(TestBase):
 class TestControlRename(TestBaseControl):
     def test_encapsulation(self):
         control = forge.registry.control(rename=True,
-                                         name='blame',
-                                         side='left',
-                                         **self.encapsulation_node_creation())
+                                             name='blame',
+                                             side='left',
+                                             **self.encapsulation_node_creation())
 
         self.assertEquals(control.name_short, 'l_blame_CTR')
         self.assertEquals(control.group_offset.name_short, 'l_blame_OGP')
@@ -52,7 +52,7 @@ class TestControlRename(TestBaseControl):
 
 class TestControlSerialize(TestBaseControl):
     def test_encapsulation(self):
-        control = forge.registry.MayaControl(**self.encapsulation_node_creation())
+        control = forge.registry.control(**self.encapsulation_node_creation())
         control.rename(name='blame', side='right')
         self.assertEquals(control.serialize(),
                           {'MayaControl': {'node_dag': '|r_blame_CTR',
@@ -62,7 +62,7 @@ class TestControlSerialize(TestBaseControl):
                            })
 
     def test_creation(self):
-        control = forge.registry.MayaControl.create(name='name', side='left')
+        control = forge.registry.control.create(name='name', side='left')
         control.rename(name='blame')
         self.assertEquals(control.serialize(),
                           {'MayaControl': {'node_dag': '|l_blame_OGP|l_blame_CTR',
@@ -74,13 +74,13 @@ class TestControlSerialize(TestBaseControl):
 
 class TestControlFromSerial(TestBaseControl):
     def test_encapsulation(self):
-        control = forge.registry.MayaControl(**self.encapsulation_node_creation())
+        control = forge.registry.control(**self.encapsulation_node_creation())
         control.rename(name='blame', side='right', childtype='fucker')
-        self.assertEquals(forge.registry.MayaControl.from_serial(control.serialize()),
+        self.assertEquals(forge.registration.control.from_serial(control.serialize()),
                           control)
 
     def test_creation(self):
-        control = forge.registry.MayaControl.create(name='name', side='left', childtype='fucker')
+        control = forge.registry.control.create(name='name', side='left', childtype='fucker')
         control.rename(name='blame')
-        self.assertEquals(forge.registry.MayaControl.from_serial(control.serialize()),
+        self.assertEquals(forge.registration.control.from_serial(control.serialize()),
                           control)

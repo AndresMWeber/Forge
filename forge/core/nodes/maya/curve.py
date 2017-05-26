@@ -70,10 +70,10 @@ class MayaCurve(MayaTransform, AbstractCurve):
             for shape in shapes:
                 parent = shape.get_parent()
                 forge.registry.utils.transformation.zero_local_space(parent.node,
-                                                                     apply=True,
-                                                                     translate=True,
-                                                                     rotate=True,
-                                                                     scale=True)
+                                                                         apply=True,
+                                                                         translate=True,
+                                                                         rotate=True,
+                                                                         scale=True)
                 target_shape.parent(self.node, relative=maintain_offset, shape=True)
 
         forge.registry.utils.scene.safe_delete(target_shape)

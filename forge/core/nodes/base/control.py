@@ -27,7 +27,6 @@ class AbstractControl(AbstractCurve):
         self.scale = float(scale)  # Ensuring we cast back to float in case it was serialized
 
         if control_offset_grp:
-            print 'working with control offset group input: ', control_offset_grp
             self.group_offset = forge.registry.transform.factory(control_offset_grp)
             self.group_offset.INTERNAL_TYPE = 'offset_group'
 

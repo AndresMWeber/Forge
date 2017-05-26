@@ -1,17 +1,17 @@
 import templates
 import core
 import exception
-import node_registry
+import registration
 import settings
 import vendor.cgLogging as logger
-__all__ = ['rig_lib', 'node_registry', 'settings', 'vendor', 'exception', 'core', 'rig']
+__all__ = ['rig_lib', 'registration.py', 'settings', 'vendor', 'exception', 'core', 'components']
 
 
 LOG = logger.cgLogging.getLogger(__name__, level=logger.cgLogging.INFO, shell=False)
 
-registry = node_registry.Registry()
+shapes = registration.MayaControlShapeFactory
+registry = registration.Registry()
 register_node = registry.register_node
-shapes = node_registry.MayaControlShapeFactory
 
 import forge.core.core_utils.base_utils
 LOG.info('Successfully loaded module %s' % forge.core.core_utils.base_utils.__name__)
@@ -32,6 +32,10 @@ LOG.info('Successfully loaded module %s' % forge.core.nodes.__name__)
 
 LOG.info('starting set_default_nodes')
 registry.set_default_nodes(mode=settings.MODE)
+
+LOG.info('Importing all rig components')
+import forge.components
+#LOG.info('Successfully loaded module %s' % forge.components.__name__)
 
 LOG.info('Importing all rig elements')
 import forge.elements

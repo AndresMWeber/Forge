@@ -5,13 +5,13 @@ import string
 utils = forge.registry.utils
 
 @forge.register_node
-class TwistInterpolators(forge.registry.element):
+class TwistInterpolators(forge.registry.Element):
     def __init__(self,
                  joints='',
                  scale=1.0,
                  **kwargs):
         super(TwistInterpolators, self).__init__(**kwargs)
-        self.joints = [forge.registry.control.factory(joint) for joint_pair in joints for joint in joint_pair]
+        self.joints = [forge.registration.control.factory(joint) for joint_pair in joints for joint in joint_pair]
         print 'deserialized joints ', self.joints
         self.register_nodes(self.joints, node_type=settings.JOINT_TYPE)
 
@@ -43,12 +43,12 @@ class TwistInterpolators(forge.registry.element):
 
         if source_joints:
             for parent_joint in source_joints:
-                parent_joint = forge.registry.joint.factory(parent_joint)
-                parent_joint_first_child = forge.registry.joint.factory(parent_joint.get_children(type='joint')[0])
-                twist_parent_joint = forge.registry.joint.factory(utils.scene.duplicate(parent_joint,
-                                                                                        po=True))
-                twist_child_joint = forge.registry.joint.factory(utils.scene.duplicate(parent_joint_first_child,
-                                                                                       po=True))
+                parent_joint = forge.registration.joint.factory(parent_joint)
+                parent_joint_first_child = forge.registration.joint.factory(parent_joint.get_children(type='joint')[0])
+                twist_parent_joint = forge.registration.joint.factory(utils.scene.duplicate(parent_joint,
+                                                                                            po=True))
+                twist_child_joint = forge.registration.joint.factory(utils.scene.duplicate(parent_joint_first_child,
+                                                                                           po=True))
 
                 for twist_joint in [twist_parent_joint, twist_child_joint]:
                     twist_joint.color(color_index=1)

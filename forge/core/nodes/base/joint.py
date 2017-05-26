@@ -15,4 +15,4 @@ class AbstractJoint(transform.AbstractTransform):
 
     @staticmethod
     def create_engine_instance(*args, **kwargs):
-        return forge.registry.joint(*args, **kwargs)
+        return forge.registration.joint(*args, **kwargs)

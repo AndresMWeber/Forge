@@ -4,7 +4,7 @@ import forge.settings as settings
 utils = forge.registry.utils
 
 @forge.register_node
-class Universal(forge.registry.element):
+class Universal(forge.registry.Element):
     def __init__(self,
                  control_global_A='',
                  control_global_B='',
@@ -14,8 +14,8 @@ class Universal(forge.registry.element):
         kwargs['name'] = kwargs.get('name', 'universal')
         super(Universal, self).__init__(**kwargs)
         forge.LOG.info('Initializing Universal with kwargs %s and controls: %r %r' % (kwargs, control_global_A, control_global_B))
-        self.control_global_A = forge.registry.control.factory(node_dag=control_global_A, scale=scale)
-        self.control_global_B = forge.registry.control.factory(node_dag=control_global_B, scale=scale * .8)
+        self.control_global_A = forge.registration.control.factory(node_dag=control_global_A, scale=scale)
+        self.control_global_B = forge.registration.control.factory(node_dag=control_global_B, scale=scale * .8)
         self.register_nodes(['control_global_B', 'control_global_A'], node_type=settings.CONTROL_TYPE)
 
     def setup_connections(self):
@@ -46,10 +46,10 @@ class Universal(forge.registry.element):
     @classmethod
     def _create_controls(cls, scale=3.0, **kwargs):
         serialized = super(Universal, cls)._create_controls(scale=3.0, **kwargs)
-        control_global_A = forge.registry.control.create(shape='circle', scale=scale)
-        control_global_B = forge.registry.control.create(shape='circle',
-                                                         scale=scale * 0.8,
-                                                         parent=control_global_A.group_connection)
+        control_global_A = forge.registration.control.create(shape='circle', scale=scale)
+        control_global_B = forge.registration.control.create(shape='circle',
+                                                             scale=scale * 0.8,
+                                                             parent=control_global_A.group_connection)
         control_global_A.rotate_shapes((90, 0, 0))
         control_global_B.rotate_shapes((90, 0, 0))
         serialized.update({'control_global_A': control_global_A.serialize(),

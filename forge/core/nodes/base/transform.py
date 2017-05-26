@@ -30,24 +30,24 @@ class AbstractTransform(node.AbstractNode):
     def t(self):
         return self.position(world_space=False, q=True)
 
-    def translate_to_obj(self, target):
+    def _translate_to_obj(self, target):
         raise NotImplementedError
 
-    def rotate_to_obj(self, target):
+    def _rotate_to_obj(self, target):
         raise NotImplementedError
 
-    def move_to_obj(self, target):
+    def _move_to_obj(self, target):
         raise NotImplementedError
 
     def transform(self, move_style, ref_xform):
         try:
             self.validate_node(ref_xform)
             if move_style == channels.MOVE.MATCH:
-                self.move_to_obj(ref_xform)
+                self._move_to_obj(ref_xform)
             if move_style == channels.MOVE.POSITION:
-                self.translate_to_obj(ref_xform)
+                self._translate_to_obj(ref_xform)
             if move_style == channels.MOVE.ROTATION:
-                self.rotate_to_obj(ref_xform)
+                self._rotate_to_obj(ref_xform)
 
         except exception.ValidationError:
             forge.LOG.error("Invalid move type specified.")

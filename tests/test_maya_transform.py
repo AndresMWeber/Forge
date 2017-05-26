@@ -120,11 +120,11 @@ class TestTransformFromSerial(TestBase):
     def test_encapsulation(self):
         transform = forge.registry.MayaTransform(self.test_group)
         transform.rename(name='blame', side='right', childtype='fucker')
-        self.assertEquals(forge.registry.MayaTransform.from_serial(transform.serialize()),
+        self.assertEquals(forge.registration.MayaTransform.from_serial(transform.serialize()),
                           transform)
 
     def test_creation(self):
         transform = forge.registry.MayaTransform.create(name='name', side='left', childtype='fucker')
         transform.rename(name='blame')
-        self.assertEquals(forge.registry.MayaTransform.from_serial(transform.serialize()),
+        self.assertEquals(forge.registration.MayaTransform.from_serial(transform.serialize()),
                           transform)

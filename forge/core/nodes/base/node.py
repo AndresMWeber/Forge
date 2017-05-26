@@ -30,7 +30,7 @@ class AbstractNode(object):
         if isinstance(node_dag, dict):
             forge.LOG.debug('detected serialzation, deserializing and instancing with args %s' % node_dag)
             kwargs.update(node_dag)
-            return cls(**kwargs)
+            return cls.from_serial(kwargs)
         elif issubclass(type(node_dag), cls):
             forge.LOG.debug('Detected subclass of %s...using this' % cls.__name__)
             return node_dag
@@ -181,10 +181,10 @@ class AbstractNode(object):
             return forge.registry.get_class_by_id(class_id).factory(**class_kwargs)
 
     def __resolve_serializations(self, serialization):
-
+        # TODO: FINISH AND IMPLEMENT IN FROM_SERIAL
         fields_found = []
 
-        for key, value in iteritems(search_dict):
+        for key, value in iteritems(serialization):
             if isinstance(value, dict):
                 if forge.registry.get_class_by_id(value):
                     serialization[key] = forge.registry.get_class_by_id(key).from_serial(value)

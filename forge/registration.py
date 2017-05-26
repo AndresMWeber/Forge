@@ -8,7 +8,7 @@ from .settings import MODE
 
 class Registry(object):
     node_constructors = []
-    required_nodes = ['Node', 'Transform', 'Curve', 'Control', 'Element', 'Joint']
+    required_nodes = ['Node', 'Transform', 'Curve', 'Control', 'Joint']
     utils = None
 
     @classmethod
@@ -65,8 +65,8 @@ class Registry(object):
     @staticmethod
     def maya_semi_circle(constructionHistory=True, *args, **kwargs):
         circle = mc.circle(constructionHistory=constructionHistory, *args, **kwargs)[0]
-        median_cv = int(round(forge.registry.utils.curve.get_num_cvs(circle) / 2))
-        mc.xform(forge.registry.utils.curve.get_cvs(circle, slice_start=median_cv), r=1, s=[0, 0, 1])
+        median_cv = int(round(forge.registration.utils.curve.get_num_cvs(circle) / 2))
+        mc.xform(forge.registration.utils.curve.get_cvs(circle, slice_start=median_cv), r=1, s=[0, 0, 1])
         return circle
 
     @staticmethod

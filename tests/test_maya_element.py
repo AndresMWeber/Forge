@@ -20,13 +20,13 @@ class TestBaseElement(TestBase):
 
 class TestElementRename(TestBaseElement):
     def test_encapsulation(self):
-        element = forge.registry.MayaElement(**self.encapsulation_node_creation())
+        element = forge.registry.Element(**self.encapsulation_node_creation())
         element.rename(name='blame', side='right')
         self.assertTrue(element.group_top.name_short, 'r_blame_GRP')
         self.fixtures.extend([node.node for node in element.hierarchy if hasattr(node, 'node')])
 
     def test_creation(self):
-        element = forge.registry.MayaElement.create(name='name', side='left')
+        element = forge.registry.Element.create(name='name', side='left')
         self.assertEquals(element.group_top.name_short, 'l_name_GRP')
         element.rename(name='blame')
         self.assertEquals(element.group_top.name_short, 'l_blame_GRP')

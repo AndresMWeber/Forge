@@ -1,6 +1,17 @@
 import maya.cmds as mc
 
 
+def is_exact_type(node, typename):
+    """node.type() == typename"""
+    return type(node) == typename
+
+
+def is_type(node, typename):
+    """Return True if node.type() is typename or
+    any subclass of typename."""
+    return typename in mc.nodeType(node, inherited=True)
+
+
 def get_scene_tree():
     startup_cams = [mc.listRelatives(c, p=True)[0] for c in mc.ls(cameras=True)
                     if mc.camera(c, q=True, startupCamera=True)]

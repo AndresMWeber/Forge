@@ -7,7 +7,7 @@ import nomenclate
 
 
 @forge.register_node
-class AbstractElement(object):
+class Element(object):
     LAYOUT_GUIDE_JOINTS = {}
     VISIBILITY_TYPES = [settings.MODEL_TYPE, settings.JOINT_TYPE, settings.CONTROL_TYPE]
     ENUM_DISPLAY_TYPE = 'normal:template:reference'
@@ -118,7 +118,7 @@ class AbstractElement(object):
     def connect_display_type_toggles(self, transforms, target_type='model'):
         for transform in transforms:
             forge.registry.utils.attr.connect_attr(self.group_top.get_attr_dag(attr='{TYPE}_display'.format(TYPE=target_type)),
-                                                   transform.get_attr_dag(attr='overrideDisplayType'))
+                                                       transform.get_attr_dag(attr='overrideDisplayType'))
             transform.set_attr('overrideEnabled', 1)
 
 

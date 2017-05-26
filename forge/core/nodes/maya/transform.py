@@ -30,6 +30,8 @@ class MayaTransform(MayaNode, AbstractTransform):
     @exception(forge.LOG)
     def create(cls, node_type='group', move_style='match', reference_transform_dag='', parent=None, *args, **kwargs):
         maya_transform = super(MayaTransform, cls).create(node_type='group', *args, **kwargs)
+        reference_transform_dag = cls.factory(reference_transform_dag)
+
         maya_transform.transform(move_style, reference_transform_dag)
 
         if parent:
@@ -39,19 +41,27 @@ class MayaTransform(MayaNode, AbstractTransform):
         return maya_transform
 
     def transform(self, move_style, reference_transform_dag):
-        if forge.registry.utils.scene.exists(reference_transform_dag):
+        if reference_transform_dag.exists:
             if move_style == 'match':
-                self.move_to_obj(reference_transform_dag)
+                self._move_to_obj(reference_transform_dag)
             elif (move_style == 'position') or (move_style == 'translation'):
-                self.translate_to_obj(reference_transform_dag)
+                self._translate_to_obj(reference_transform_dag)
             elif move_style == 'rotation':
-                self.rotate_to_obj(reference_transform_dag)
+                self._rotate_to_obj(reference_transform_dag)
 
-    def translate_to_obj(self, target_dag_path):
-        pos = mc.xform(target_dag_path, q=True, ws=True, t=True)
+    def position(self, t=(0.0, 0.0, 0.0), world_space=True, q=False):
+        t = t if not q else q
+        return mc.xform(self.node, q=q, os=not world_space, ws=world_space, t=t)
+
+    def rotation(self, r=(0.0, 0.0, 0.0), world_space=True, q=False):
+        r = r if not q else q
+        return mc.xform(self.node, q=q, os=not world_space, ws=world_space, ro=r)
+
+    def _translate_to_obj(self, target_dag_path):
+        pos = mc.xform(target_dag_path.node, q=True, ws=True, t=True)
         self.pos(q=False, t=pos)
 
-    def rotate_to_obj(self, target_dag_path):
+    def _rotate_to_obj(self, target_dag_path):
         null = MayaTransform.create(name='NULL')
         null.set_attr('r', self.r)
 
@@ -69,17 +79,9 @@ class MayaTransform(MayaNode, AbstractTransform):
         self.set_attr('r', null.r, type=channels.TYPES.DOUBLE3)
         null.delete()
 
-    def move_to_obj(self, target_dag_path):
-        self.translate_to_obj(target_dag_path)
-        self.rotate_to_obj(target_dag_path)
-
-    def position(self, t=(0.0, 0.0, 0.0), world_space=True, q=False):
-        t = t if not q else q
-        return mc.xform(self.node, q=q, os=not world_space, ws=world_space, t=t)
-
-    def rotation(self, r=(0.0, 0.0, 0.0), world_space=True, q=False):
-        r = r if not q else q
-        return mc.xform(self.node, q=q, os=not world_space, ws=world_space, ro=r)
+    def _move_to_obj(self, target_dag_path):
+        self._translate_to_obj(target_dag_path)
+        self._rotate_to_obj(target_dag_path)
 
     def __str__(self):
         return self.name_long
