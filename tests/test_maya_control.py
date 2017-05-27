@@ -52,20 +52,22 @@ class TestControlRename(TestBaseControl):
 
 class TestControlSerialize(TestBaseControl):
     def test_encapsulation(self):
+        self.maxDiff = 900
         control = forge.registry.control(**self.encapsulation_node_creation())
         control.rename(name='blame', side='right')
         self.assertEquals(control.serialize(),
-                          {'MayaControl': {'node_dag': '|r_blame_CTR',
+                          {'MayaControl': {'node_dag': 'r_blame_CTR',
                                            'control_offset_grp': {'MayaTransform': {'node_dag': u'r_blame_OGP'}},
                                            'control_con_grp': {'MayaTransform': {'node_dag': u'r_blame_CGP'}},
                                            'scale': 1.0}
                            })
 
     def test_creation(self):
+        self.maxDiff = 900
         control = forge.registry.control.create(name='name', side='left')
         control.rename(name='blame')
         self.assertEquals(control.serialize(),
-                          {'MayaControl': {'node_dag': '|l_blame_OGP|l_blame_CTR',
+                          {'MayaControl': {'node_dag': 'l_blame_CTR',
                                            'control_offset_grp': {'MayaTransform': {'node_dag': u'l_blame_OGP'}},
                                            'control_con_grp': {'MayaTransform': {'node_dag': u'l_blame_CGP'}},
                                            'scale': 1.0}

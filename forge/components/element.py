@@ -49,7 +49,7 @@ class Element(object):
 
     @classmethod
     def create(cls, **kwargs):
-        forge.LOG.info('Creating AbstractElement, kwargs %s' % (pformat(kwargs, depth=1)))
+        forge.LOG.info('Creating <%s>, kwargs %s' % (cls.__name__, pformat(kwargs, depth=1)))
         forge.LOG.info('Creating hierarchy...')
         kwargs.update(cls._create_hierarchy(**kwargs))
         forge.LOG.info('Creating joints...')
@@ -57,7 +57,7 @@ class Element(object):
         forge.LOG.info('Creating controls...')
         kwargs.update(cls._create_controls(**kwargs))
 
-        forge.LOG.info('Finally Initializing instance with kwargs: %s' % kwargs)
+        forge.LOG.info('Finally Initializing <%s> instance with kwargs:\n%s' % (cls.__name__, pformat(kwargs)))
         element_instance = cls(**kwargs)
         forge.LOG.info('Setting up connections...')
         element_instance.setup_connections()
@@ -131,12 +131,12 @@ class Element(object):
         group_world = forge.registry.transform.create(parent=group_top)
         group_controls = forge.registry.transform.create(parent=group_top)
 
-        return {'group_top': group_top,
-                'group_model': group_model,
-                'group_joint': group_joint,
-                'group_nodes': group_nodes,
-                'group_world': group_world,
-                'group_controls': group_controls,
+        return {'group_top': group_top.serialize(),
+                'group_model': group_model.serialize(),
+                'group_joint': group_joint.serialize(),
+                'group_nodes': group_nodes.serialize(),
+                'group_world': group_world.serialize(),
+                'group_controls': group_controls.serialize(),
                 }
 
     @classmethod
@@ -206,14 +206,14 @@ class Element(object):
     def serialize(self):
         flattened_data = {}
         for k, v in iteritems({register_type: getattr(self, register_type) for register_type in self.REGISTER_TYPES}):
-            if isinstance(v, list):
-                for item in v:
-                    try:
-                        flattened_data[item] = getattr(self, item).serialize()
-                    except AttributeError:
-                        flattened_data[item] = str(getattr(self, item)).decode('utf-8')
-            else:
-                flattened_data[k] = v if type(v) in forge.settings.SERIALIZABLE_TYPES else str(v).decode("utf-8")
+            v = v if isinstance(v, list) else list(v)
+            for item in v:
+                try:
+                    flattened_data[item] = getattr(self, item).serialize()
+                    forge.LOG.info('Serialized Element item using its own method %s' % flattened_data[item])
+                except AttributeError:
+                    flattened_data[item] = str(getattr(self, item)).decode('utf-8')
+                    forge.LOG.info('Serialized Element item using decode %s' % flattened_data[item])
 
         return {self.class_rep(): flattened_data}
 

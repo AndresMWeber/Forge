@@ -19,7 +19,9 @@ class AbstractControl(AbstractCurve):
         :param scale: float, value for scale of control
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         """
-        forge.LOG.debug('initialized with kwargs %s %s %s' % (node_dag, control_offset_grp, control_con_grp))
+        forge.LOG.info('Initializing <%s> with node_dag=%r, control_offset_grp=%r, control_con_grp=%r, kwargs=%s' % (
+            self.__class__.__name__, node_dag, control_offset_grp, control_con_grp, kwargs))
+
         super(AbstractControl, self).__init__(node_dag=node_dag, **kwargs)
 
         self.group_offset = None
@@ -52,9 +54,8 @@ class AbstractControl(AbstractCurve):
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         :return: Control
         """
-        forge.LOG.info('Creating a control with parent %r, kwargs %s' % (parent, kwargs))
-
-        control = super(AbstractControl, cls).create(shape)
+        forge.LOG.info('Creating <%s> with shape=%s, parent=%r, kwargs=%s' % (cls.__name__, shape, parent, kwargs))
+        control = super(AbstractControl, cls).create()
         offset = forge.registry.transform.create()
         connection = forge.registry.transform.create()
 
@@ -62,7 +63,7 @@ class AbstractControl(AbstractCurve):
         connection.parent(control)
         offset.parent(parent)
 
-        control_instance = cls(node_dag=control.node,
+        control_instance = cls(node_dag=control,
                                control_offset_grp=offset,
                                control_con_grp=connection,
                                scale=scale,
@@ -77,7 +78,7 @@ class AbstractControl(AbstractCurve):
         control_instance.lock_channels(flattened_channels)
         control_instance.scale_shapes(scale)
 
-        forge.LOG.debug('Control that was created is named %s' % control_instance.node)
+        forge.LOG.info('Created <%s>: %s' % (cls.__name__, control_instance))
         return control_instance
 
     def rename(self, **kwargs):
@@ -86,8 +87,7 @@ class AbstractControl(AbstractCurve):
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         :return: None
         """
-        forge.LOG.debug('Renaming this control with kwargs %s' % str(kwargs))
-        self.nom.merge_dict(kwargs)
+        forge.LOG.debug('Renaming this control with kwargs %s' % kwargs)
         super(AbstractControl, self).rename(**self.nom.state)
 
         if self.group_connection:
@@ -95,8 +95,6 @@ class AbstractControl(AbstractCurve):
 
         if self.group_offset:
             self.group_offset.rename(**self.nom.state)
-
-        self.nom.type = self.INTERNAL_TYPE
 
     def get_parent(self, level=0):
         if self.group_offset:
@@ -120,27 +118,12 @@ class AbstractControl(AbstractCurve):
     def swap_shape(self, shape='cube', maintain_offset=True, add=False):
         raise NotImplementedError
 
-    @classmethod
-    def factory(cls, node_dag='', control_offset_grp='', control_con_grp='', **kwargs):
-        if isinstance(node_dag, dict):
-            forge.LOG.debug('control.factory: serialzation input, deserializing and instancing with args %s' % node_dag)
-            node_dag.update(kwargs)
-            return cls(**node_dag)
-
-        elif issubclass(type(node_dag), cls):
-            forge.LOG.debug('control.factory: input is subclass of %s using...' % cls.__name__)
-            return node_dag
-
-        else:
-            forge.LOG.debug('control.factory: normal usage %r' % node_dag)
-            return cls(node_dag=node_dag,
-                       control_offset_grp=control_offset_grp,
-                       control_con_grp=control_con_grp,
-                       **kwargs)
-
     def serialize(self):
         return {self.__class__.__name__: {
-            'node_dag': self.name_long,
+            'node_dag': self.node,
             'control_offset_grp': self.group_offset.serialize(),
             'control_con_grp': self.group_connection.serialize(),
             'scale': self.scale}}
+
+    def __str__(self):
+        return '|%s|%s|%s' % (self.group_offset.name_short, self.node, self.group_connection.name_short)

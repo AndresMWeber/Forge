@@ -15,7 +15,9 @@ class AbstractNode(object):
     _char_attr = '.'
 
     def __init__(self, node_dag='', **kwargs):
-        forge.LOG.info('Initializing a node with node_dag %r and kwargs %s' % (node_dag, kwargs))
+        forge.LOG.debug('Initializing a node <%s> with node_dag %r and kwargs %s' % (self.__class__.__name__,
+                                                                                     node_dag,
+                                                                                     kwargs))
         self.nom = nomenclate.Nom()
         self.validate_node(node_dag)
         self._dag_path = node_dag
@@ -26,23 +28,29 @@ class AbstractNode(object):
 
     @classmethod
     def factory(cls, node_dag='', **kwargs):
-        forge.LOG.debug('Node.factory running with dag node reference: (type: %s), %r' % (type(node_dag), node_dag))
+        forge.LOG.info('<%s>.factory running with dag node reference: %r' % (cls.__name__, node_dag))
         if isinstance(node_dag, dict):
-            forge.LOG.debug('detected serialzation, deserializing and instancing with args %s' % node_dag)
+            forge.LOG.info('\t\tDetected serialzation, deserializing and instancing with args %s' % node_dag)
             kwargs.update(node_dag)
             return cls.from_serial(kwargs)
+
         elif issubclass(type(node_dag), cls):
-            forge.LOG.debug('Detected subclass of %s...using this' % cls.__name__)
+            forge.LOG.info('\t\tDetected subclass of %s...using input: %r' % (cls.__name__, node_dag))
             return node_dag
+
         else:
-            forge.LOG.debug('We are going with %r' % node_dag)
+            forge.LOG.info('\t\tNo subclass or serialization, <%s>.__init__ as normal with %r' % (cls.__name__, node_dag))
             return cls(node_dag, **kwargs)
 
     @classmethod
     def create(cls, *args, **kwargs):
+        forge.LOG.debug('Creating a node <%s> and kwargs %s' % (cls.__name__, kwargs))
         node = cls.create_engine_instance(*args, **kwargs)
         node_instance = cls(node, **kwargs)
         node_instance.rename(**kwargs)
+        forge.LOG.info('Created node <%s> with dag path: %s' % (node_instance.__class__.__name__,
+                                                                node_instance._dag_path))
+
         return node_instance
 
     @property
@@ -136,7 +144,7 @@ class AbstractNode(object):
             return '<%s @ 0x%x>' % (self.__class__.__name__, id(self))
 
     def __str__(self):
-        return self.dag_path
+        return self._dag_path
 
     def __getattr__(self, item):
         try:
@@ -173,6 +181,7 @@ class AbstractNode(object):
         for class_id, class_kwargs in iteritems(serialization):
             forge.LOG.info('Reading data from serialization: %s: %s\nto instantiate node of type %s' %
                            (class_id, class_kwargs, cls.__name__))
+
             for k, v in iteritems(class_kwargs):
                 if isinstance(v, dict) and forge.registry.get_class_by_id(k):
                     forge.LOG.info('Detected nested serialization, rebuilding node...')

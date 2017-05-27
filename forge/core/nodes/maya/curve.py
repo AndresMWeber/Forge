@@ -50,7 +50,7 @@ class MayaCurve(MayaTransform, AbstractCurve):
     def translate_shapes(self, translation=(0, 0, 0), relative=True):
         mc.xform(self.all_curve_cvs, relative=relative, translation=translation)
 
-    def swap_shape(self, shape='cube', maintain_offset=True, add=False):
+    def swap_shape(self, shape='cube', maintain_offset=False, add=False):
         """
         Swaps the shape with an alternative predefined control shape
         :param shape: str, given shape from list in rig_lib.core.nodes.maya_utils.factory.MayaControlShapeFactory
@@ -61,19 +61,7 @@ class MayaCurve(MayaTransform, AbstractCurve):
         if not add:
             mc.delete(self.get_shapes(types=MayaCurve.ENGINE_TYPE))
 
-        target_shape = forge.registry.curve(getattr(forge.shapes, shape)())
-        shapes = target_shape.get_children(type=MayaCurve.ENGINE_TYPE)
-        print('Shapes to reparent...', [shape.node for shape in shapes])
+        target_shape_transform = forge.registry.curve(getattr(forge.shapes, shape)())
+        shapes = target_shape_transform.get_children(type=MayaCurve.ENGINE_TYPE)
         mc.parent([shape.node for shape in shapes], self.node, relative=not maintain_offset, shape=True)
-        print('New parents: ', [shape.get_parent() for shape in shapes])
-        if maintain_offset:
-            for shape in shapes:
-                parent = shape.get_parent()
-                forge.registry.utils.transformation.zero_local_space(parent.node,
-                                                                         apply=True,
-                                                                         translate=True,
-                                                                         rotate=True,
-                                                                         scale=True)
-                target_shape.parent(self.node, relative=maintain_offset, shape=True)
-
-        forge.registry.utils.scene.safe_delete(target_shape)
+        forge.registry.utils.scene.safe_delete(target_shape_transform)

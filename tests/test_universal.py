@@ -39,7 +39,7 @@ class TestUniversalCreation(TestBaseUniversal):
         self.fixtures.extend([node.node for node in universal.flat_hierarchy])
 
     @forge.log_function_call
-    def test_creation_hierarchy(self):
+    def test_creation_check_hierarchy(self):
         universal = forge.registry.Universal.create(side='left')
 
         self.assertIsNone(universal.group_top.get_parent())
