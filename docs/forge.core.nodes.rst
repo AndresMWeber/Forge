@@ -15,4 +15,5 @@ Module contents
 .. automodule:: forge.core.nodes
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:

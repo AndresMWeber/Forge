@@ -10,6 +10,7 @@ forge\.core\.nodes\.maya\.control module
 .. automodule:: forge.core.nodes.maya.control
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:
 
 forge\.core\.nodes\.maya\.curve module
@@ -18,6 +19,7 @@ forge\.core\.nodes\.maya\.curve module
 .. automodule:: forge.core.nodes.maya.curve
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:
 
 forge\.core\.nodes\.maya\.element module
@@ -26,6 +28,7 @@ forge\.core\.nodes\.maya\.element module
 .. automodule:: forge.core.nodes.maya.element
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:
 
 forge\.core\.nodes\.maya\.joint module
@@ -34,6 +37,7 @@ forge\.core\.nodes\.maya\.joint module
 .. automodule:: forge.core.nodes.maya.joint
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:
 
 forge\.core\.nodes\.maya\.node module
@@ -42,6 +46,7 @@ forge\.core\.nodes\.maya\.node module
 .. automodule:: forge.core.nodes.maya.node
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:
 
 forge\.core\.nodes\.maya\.transform module
@@ -50,6 +55,7 @@ forge\.core\.nodes\.maya\.transform module
 .. automodule:: forge.core.nodes.maya.transform
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:
 
 
@@ -59,4 +65,5 @@ Module contents
 .. automodule:: forge.core.nodes.maya
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:

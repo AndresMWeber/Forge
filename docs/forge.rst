@@ -20,6 +20,7 @@ forge\.exception module
 .. automodule:: forge.exception
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:
 
 forge\.node\_registry module
@@ -28,6 +29,7 @@ forge\.node\_registry module
 .. automodule:: forge.node_registry
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:
 
 forge\.settings module
@@ -36,16 +38,8 @@ forge\.settings module
 .. automodule:: forge.settings
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:
-
-forge\.version module
----------------------
-
-.. automodule:: forge.version
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 
 Module contents
 ---------------
@@ -53,4 +47,5 @@ Module contents
 .. automodule:: forge
     :members:
     :undoc-members:
+    :inherited-members:
     :show-inheritance:
