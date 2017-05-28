@@ -28,4 +28,4 @@ ENV MAYA_DISABLE_CIP=1
 # Cleanup
 WORKDIR /Forge
 
-ENTRYPOINT mayapy -m nose --with-coverage --cover-package=forge tests
+ENTRYPOINT mayapy -m nose --with-coverage --cover-package=forge tests && coveralls
