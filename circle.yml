@@ -11,7 +11,7 @@ dependencies:
 
 test:
   override:
-    - docker run -it forge bash -c "mayapy -m nose /Forge/tests"
+    - docker run -it forge bash -c "mayapy -m nose --with-coverage --cover-package=forge /Forge/tests"
   post:
     - coveralls
 
