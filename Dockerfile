@@ -4,16 +4,16 @@ MAINTAINER andresmweber@gmail.com
 
 # Make mayapy the default Python
 RUN echo alias hpython="\"/usr/autodesk/maya/bin/mayapy\"" >> ~/.bashrc && \
-    echo alias hpip="\"mayapy -m pip\"" >> ~/.bashrc
-
-# Install pip in Mayapy
-RUN wget https://bootstrap.pypa.io/get-pip.py && \
+    echo alias hpip="\"mayapy -m pip\"" >> ~/.bashrc && \
+    wget https://bootstrap.pypa.io/get-pip.py && \
     mayapy get-pip.py
 
 ADD . /Forge
-RUN mayapy -m pip install -r /Forge/requirements.txt
-RUN mayapy -m pip install /Forge[test]
-RUN chmod -x $(find /Forge/tests/ -name '*.py')
+
+RUN mayapy -m pip install -r /Forge/requirements.txt && \
+    mayapy -m pip install /Forge[test] coverage && \
+    chmod -x $(find /Forge/tests/ -name '*.py')
+
 #ENTRYPOINT ["mayapy"]
 #CMD ["app.py"]
 
@@ -27,3 +27,5 @@ ENV MAYA_DISABLE_CIP=1
 
 # Cleanup
 WORKDIR /Forge
+
+ENTRYPOINT mayapy -m nose --with-coverage --cover-package=forge tests
