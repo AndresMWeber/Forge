@@ -37,7 +37,7 @@ setup(
     packages=find_packages(exclude=['docs', 'tests*']),
     install_requires=['simplejson', 'nomenclate', 'six'],
     extras_require={
-        'test': ['nose', 'travis', 'coveralls'],
+        'test': ['nose'],
         'dev': ['twine', 'sphinx', 'docutils', 'docopt']
     },
     cmdclass={'test': 'tox'},
