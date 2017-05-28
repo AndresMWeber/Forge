@@ -35,7 +35,7 @@ RUN mayapy -m pip install -r /Forge/requirements.txt && \
 
 RUN wget https://bootstrap.pypa.io/get-pip.py && \
     python2.7 get-pip.py && \
-    python2.7 -m pip install coveralls
+    python2.7 -m pip install coveralls pyyaml
 
 # Cleanup
 WORKDIR /Forge
