@@ -28,18 +28,19 @@ class AbstractNode(object):
 
     @classmethod
     def factory(cls, node_dag='', **kwargs):
-        forge.LOG.info('<%s>.factory running with dag node reference: %r' % (cls.__name__, node_dag))
+        forge.LOG.debug('<%s>.factory running with dag node reference: %r' % (cls.__name__, node_dag))
         if isinstance(node_dag, dict):
-            forge.LOG.info('\t\tDetected serialzation, deserializing and instancing with args %s' % node_dag)
+            forge.LOG.debug('\t\tDetected serialzation, deserializing and instancing with args %s' % node_dag)
             kwargs.update(node_dag)
             return cls.from_serial(kwargs)
 
         elif issubclass(type(node_dag), cls):
-            forge.LOG.info('\t\tDetected subclass of %s...using input: %r' % (cls.__name__, node_dag))
+            forge.LOG.debug('\t\tDetected subclass of %s...using input: %r' % (cls.__name__, node_dag))
             return node_dag
 
         else:
-            forge.LOG.info('\t\tNo subclass or serialization, <%s>.__init__ as normal with %r' % (cls.__name__, node_dag))
+            forge.LOG.debug(
+                '\t\tNo subclass or serialization, <%s>.__init__ as normal with %r' % (cls.__name__, node_dag))
             return cls(node_dag, **kwargs)
 
     @classmethod
@@ -48,7 +49,7 @@ class AbstractNode(object):
         node = cls.create_engine_instance(*args, **kwargs)
         node_instance = cls(node, **kwargs)
         node_instance.rename(**kwargs)
-        forge.LOG.info('Created node <%s> with dag path: %s' % (node_instance.__class__.__name__,
+        forge.LOG.debug('Created node <%s> with dag path: %s' % (node_instance.__class__.__name__,
                                                                 node_instance._dag_path))
 
         return node_instance
@@ -167,44 +168,49 @@ class AbstractNode(object):
         except AttributeError:
             return self.node == str(other)
 
+    @staticmethod
+    def imprint_serialization(instance, target_node=None, serialization=None, tag_attr=forge.settings.DEFAULT_TAG_ATTR):
+        """
+        :param instance: forge.registry.node - instance that inherits node or has forge attr/serialization functionality
+        :param target_node: (forge.registry.MayaTransform) - Target maya node to add/set the attribute
+        :param serialization: (str) - default is a serialized string to recreate the node, override to custom tag
+        :param tag_attr: (str) - The name for the tag attribute (default='forge')
+        :return: (None)
+        """
+        if target_node is None:
+            target_node = instance.group_top
+            print("default use %s" % target_node)
+        serialized_data = instance.serialize() if serialization is None else serialization
+        target_node.add_attr(tag_attr, serialized_data, dt='string')
+        forge.LOG.info('%r --> Imprinted serialization to node.attr %s.%s=%s' % (instance,
+                                                                                 target_node,
+                                                                                 tag_attr,
+                                                                                 serialized_data))
+        return target_node.get_attr(tag_attr)
+
     def serialize(self):
         return {self.__class__.__name__: {'node_dag': self.node}}
 
     @classmethod
-    def from_serial(cls, serialization):
-        """ Only supports one node from the serialization...might have to refactor.  It has a for loop just to 
-            enumerate for now.
+    def from_serial(cls, serialization, _depth=0):
+        """ Resolves entries in a dict that represent class serializations
         
         :param serialization: {str: dict}, dictionary 
-        :return: AbstractNode
+        :param _depth: int, depth marker, for internal use only 
+        :return: dict
         """
-        for class_id, class_kwargs in iteritems(serialization):
-            forge.LOG.info('Reading data from serialization: %s: %s\nto instantiate node of type %s' %
-                           (class_id, class_kwargs, cls.__name__))
+        if _depth == 0: forge.LOG.debug('Initial serial before resolution: %s' % serialization)
+        forge.LOG.debug('%sfrom_serial: working with dictionary %s ' % ('\t' * _depth, serialization))
+        _depth += 1
 
-            for k, v in iteritems(class_kwargs):
-                if isinstance(v, dict) and forge.registry.get_class_by_id(k):
-                    forge.LOG.info('Detected nested serialization, rebuilding node...')
-                    class_kwargs[k] = forge.registry.get_class_by_id(k).from_serial(v)
-
-            return forge.registry.get_class_by_id(class_id).factory(**class_kwargs)
-
-    def __resolve_serializations(self, serialization):
-        # TODO: FINISH AND IMPLEMENT IN FROM_SERIAL
-        fields_found = []
-
-        for key, value in iteritems(serialization):
-            if isinstance(value, dict):
-                if forge.registry.get_class_by_id(value):
-                    serialization[key] = forge.registry.get_class_by_id(key).from_serial(value)
-
-                serialization[key] = self.__resolve_serializations(value)
-
-            elif isinstance(value, list):
-                for item in value:
-                    if isinstance(item, dict):
-                        more_results = self.__resolve_serializations(item, field)
-                        for another_result in more_results:
-                            fields_found.append(another_result)
-
-        return fields_found
+        for k, v in iteritems(serialization):
+            forge.LOG.debug('%sRunning through k=%s, v=%s' % ('\t' * _depth, k, v))
+            if isinstance(v, dict):
+                serialization[k] = cls.from_serial(v, _depth=_depth)
+            class_resolution = forge.registry.get_class_by_id(k)
+            if class_resolution:
+                forge.LOG.debug('%s-----> Found class <%s> serialization, resolving...' % ('\t' * (_depth + 1),
+                                                                                          class_resolution.__name__))
+                serialization = class_resolution(**v)
+        if _depth == 1: forge.LOG.info('Final serial resolution: %r' % serialization)
+        return serialization

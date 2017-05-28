@@ -63,7 +63,7 @@ class AbstractControl(AbstractCurve):
         connection.parent(control)
         offset.parent(parent)
 
-        control_instance = cls(node_dag=control,
+        control_instance = cls(node_dag=control.node,
                                control_offset_grp=offset,
                                control_con_grp=connection,
                                scale=scale,
@@ -88,7 +88,7 @@ class AbstractControl(AbstractCurve):
         :return: None
         """
         forge.LOG.debug('Renaming this control with kwargs %s' % kwargs)
-        super(AbstractControl, self).rename(**self.nom.state)
+        super(AbstractControl, self).rename(**kwargs)
 
         if self.group_connection:
             self.group_connection.rename(**self.nom.state)

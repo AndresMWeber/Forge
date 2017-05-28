@@ -2,6 +2,8 @@ from base_test import TestBase
 import maya.standalone as ms
 import maya.cmds as mc
 import forge
+from pprint import pformat
+import json
 
 ms.initialize(name='forge')
 
@@ -36,7 +38,38 @@ class TestElementRename(TestBaseElement):
 class TestElementDel(TestBaseElement):
     @forge.log_function_call
     def test_delete(self):
-        universal = forge.registry.Universal.create(side='left')
-        nodes = list(universal.yield_nodes)
-        del universal
+        element = forge.registry.Element.create(side='left')
+        nodes = list(element.yield_nodes)
+        del element
         self.assertFalse(all([mc.objExists(node) for node in nodes]))
+
+
+class TestElementSerialize(TestBaseElement):
+    @forge.log_function_call
+    def test_creation_serialization(self):
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
+        element = forge.registry.Element.create(side='left')
+        element.imprint_serialization()
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
+        self.assertEquals(self.deep_sort(element.group_top.get_attr(forge.settings.DEFAULT_TAG_ATTR)),
+                          self.deep_sort(json.loads(json.dumps(element.serialize()))))
+
+    @forge.log_function_call
+    def test_creation_serialization_encapsulation(self):
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
+        element = forge.registry.Element(**self.encapsulation_node_creation())
+        element.imprint_serialization()
+        element_other = forge.registry.Element.factory(element.group_top.get_attr(forge.settings.DEFAULT_TAG_ATTR))
+        forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
+        self.assertEquals(element, element_other)
+
+
+class TestElementFromSerial(TestBaseElement):
+    def test_encapsulation(self):
+        element = forge.registry.Element(**self.encapsulation_node_creation())
+        element.rename(name='blame', side='right', childtype='fucker')
+        self.assertEquals(forge.registry.Element.from_serial(element.serialize()), element)
+
+    def test_creation(self):
+        element = forge.registry.Element.create(name='name', side='left', childtype='fucker')
+        self.assertEquals(forge.registry.Element.from_serial(element.serialize()), element)

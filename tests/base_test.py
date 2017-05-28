@@ -3,6 +3,7 @@ import maya.standalone as ms
 import maya.cmds as mc
 import forge
 from pprint import pformat
+from collections import OrderedDict
 
 ms.initialize(name='forge')
 
@@ -44,5 +45,26 @@ class TestBase(unittest.TestCase):
                     for fix in mc.ls(fixture):
                         mc.delete(fix)
         tearDown_count += 1
-        #mc.quit()
-        #ms.uninitialize()
+
+    @classmethod
+    def deep_sort(cls, obj):
+        """ 
+        https://stackoverflow.com/questions/18464095/how-to-achieve-assertdictequal-with-assertsequenceequal-applied-to-values
+        Recursively sort list or dict nested lists
+        """
+
+        if isinstance(obj, dict):
+            _sorted = OrderedDict()
+            for key in sorted(list(obj)):
+                _sorted[key] = cls.deep_sort(obj[key])
+
+        elif isinstance(obj, list):
+            new_list = []
+            for val in obj:
+                new_list.append(cls.deep_sort(val))
+            _sorted = sorted(new_list)
+
+        else:
+            _sorted = obj
+
+        return _sorted

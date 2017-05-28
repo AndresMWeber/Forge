@@ -54,23 +54,23 @@ class TestControlSerialize(TestBaseControl):
     def test_encapsulation(self):
         self.maxDiff = 900
         control = forge.registry.control(**self.encapsulation_node_creation())
-        control.rename(name='blame', side='right')
+        control.rename(name='blame', side='right', purpose='holy')
         self.assertEquals(control.serialize(),
-                          {'MayaControl': {'node_dag': 'r_blame_CTR',
-                                           'control_offset_grp': {'MayaTransform': {'node_dag': u'r_blame_OGP'}},
-                                           'control_con_grp': {'MayaTransform': {'node_dag': u'r_blame_CGP'}},
-                                           'scale': 1.0}
+                          {'MayaControl': {'node_dag': control.name_short,
+                                           'control_offset_grp': control.group_offset.serialize(),
+                                           'control_con_grp': control.group_connection.serialize(),
+                                           'scale': control.scale}
                            })
 
     def test_creation(self):
         self.maxDiff = 900
-        control = forge.registry.control.create(name='name', side='left')
+        control = forge.registry.control.create(name='name', side='left', purpose='grail')
         control.rename(name='blame')
         self.assertEquals(control.serialize(),
-                          {'MayaControl': {'node_dag': 'l_blame_CTR',
-                                           'control_offset_grp': {'MayaTransform': {'node_dag': u'l_blame_OGP'}},
-                                           'control_con_grp': {'MayaTransform': {'node_dag': u'l_blame_CGP'}},
-                                           'scale': 1.0}
+                          {'MayaControl': {'node_dag': control.name_short,
+                                           'control_offset_grp': control.group_offset.serialize(),
+                                           'control_con_grp': control.group_connection.serialize(),
+                                           'scale': control.scale}
                            })
 
 

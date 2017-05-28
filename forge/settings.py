@@ -14,4 +14,4 @@ NUKE = 'nuke'
 HOUDINI = 'houdini'
 
 MODE = MAYA
-DEFAULT_TAG_ATTR = 'forge'
+DEFAULT_TAG_ATTR = 'metaforge'
