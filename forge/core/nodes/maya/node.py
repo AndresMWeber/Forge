@@ -74,7 +74,7 @@ class MayaNode(AbstractNode):
         return self.get_attr(attr)
 
     def get_attr(self, attr):
-        value = utils.attr.set_attr(self.get_attr_dag(attr))
+        value = utils.attr.get_attr(self.get_attr_dag(attr))
         try:
             return simplejson.loads(value)
         except (ValueError, TypeError):

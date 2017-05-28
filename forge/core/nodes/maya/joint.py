@@ -10,6 +10,7 @@ class MayaJoint(MayaTransform, AbstractJoint):
     """
          Wraps a dag_path with generic functions to manipulate a maya joint node
     """
+
     def __init__(self, node_dag='', *args, **kwargs):
         super(MayaJoint, self).__init__(node_dag=node_dag, *args, **kwargs)
 

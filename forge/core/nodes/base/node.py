@@ -1,5 +1,6 @@
 import nomenclate
 import forge
+from six import iteritems
 
 utils = forge.registry.utils
 
@@ -14,6 +15,9 @@ class AbstractNode(object):
     _char_attr = '.'
 
     def __init__(self, node_dag='', **kwargs):
+        forge.LOG.debug('Initializing a node <%s> with node_dag %r and kwargs %s' % (self.__class__.__name__,
+                                                                                     node_dag,
+                                                                                     kwargs))
         self.nom = nomenclate.Nom()
         self.validate_node(node_dag)
         self._dag_path = node_dag
@@ -24,23 +28,30 @@ class AbstractNode(object):
 
     @classmethod
     def factory(cls, node_dag='', **kwargs):
-        forge.LOG.debug('Node.factory running with dag node reference: (type: %s), %r' % (type(node_dag), node_dag))
+        forge.LOG.debug('<%s>.factory running with dag node reference: %r' % (cls.__name__, node_dag))
         if isinstance(node_dag, dict):
-            forge.LOG.debug('detected serialzation, deserializing and instancing with args %s' % node_dag)
+            forge.LOG.debug('\t\tDetected serialzation, deserializing and instancing with args %s' % node_dag)
             kwargs.update(node_dag)
-            return cls(**kwargs)
+            return cls.from_serial(kwargs)
+
         elif issubclass(type(node_dag), cls):
-            forge.LOG.debug('Detected subclass of %s...using this' % cls.__name__)
+            forge.LOG.debug('\t\tDetected subclass of %s...using input: %r' % (cls.__name__, node_dag))
             return node_dag
+
         else:
-            forge.LOG.debug('We are going with %r' % node_dag)
+            forge.LOG.debug(
+                '\t\tNo subclass or serialization, <%s>.__init__ as normal with %r' % (cls.__name__, node_dag))
             return cls(node_dag, **kwargs)
 
     @classmethod
     def create(cls, *args, **kwargs):
+        forge.LOG.debug('Creating a node <%s> and kwargs %s' % (cls.__name__, kwargs))
         node = cls.create_engine_instance(*args, **kwargs)
         node_instance = cls(node, **kwargs)
         node_instance.rename(**kwargs)
+        forge.LOG.debug('Created node <%s> with dag path: %s' % (node_instance.__class__.__name__,
+                                                                node_instance._dag_path))
+
         return node_instance
 
     @property
@@ -134,7 +145,7 @@ class AbstractNode(object):
             return '<%s @ 0x%x>' % (self.__class__.__name__, id(self))
 
     def __str__(self):
-        return self.dag_path
+        return self._dag_path
 
     def __getattr__(self, item):
         try:
@@ -157,11 +168,49 @@ class AbstractNode(object):
         except AttributeError:
             return self.node == str(other)
 
-    def class_rep(self):
-        return str(self.__class__).split("'")[1]
+    @staticmethod
+    def imprint_serialization(instance, target_node=None, serialization=None, tag_attr=forge.settings.DEFAULT_TAG_ATTR):
+        """
+        :param instance: forge.registry.node - instance that inherits node or has forge attr/serialization functionality
+        :param target_node: (forge.registry.MayaTransform) - Target maya node to add/set the attribute
+        :param serialization: (str) - default is a serialized string to recreate the node, override to custom tag
+        :param tag_attr: (str) - The name for the tag attribute (default='forge')
+        :return: (None)
+        """
+        if target_node is None:
+            target_node = instance.group_top
+            print("default use %s" % target_node)
+        serialized_data = instance.serialize() if serialization is None else serialization
+        target_node.add_attr(tag_attr, serialized_data, dt='string')
+        forge.LOG.info('%r --> Imprinted serialization to node.attr %s.%s=%s' % (instance,
+                                                                                 target_node,
+                                                                                 tag_attr,
+                                                                                 serialized_data))
+        return target_node.get_attr(tag_attr)
 
     def serialize(self):
-        return {self.class_rep(): {'node_dag': self.node}}
+        return {self.__class__.__name__: {'node_dag': self.node}}
 
-    def from_serial(self, serialization):
-        return self.factory(**serialization)
+    @classmethod
+    def from_serial(cls, serialization, _depth=0):
+        """ Resolves entries in a dict that represent class serializations
+        
+        :param serialization: {str: dict}, dictionary 
+        :param _depth: int, depth marker, for internal use only 
+        :return: dict
+        """
+        if _depth == 0: forge.LOG.debug('Initial serial before resolution: %s' % serialization)
+        forge.LOG.debug('%sfrom_serial: working with dictionary %s ' % ('\t' * _depth, serialization))
+        _depth += 1
+
+        for k, v in iteritems(serialization):
+            forge.LOG.debug('%sRunning through k=%s, v=%s' % ('\t' * _depth, k, v))
+            if isinstance(v, dict):
+                serialization[k] = cls.from_serial(v, _depth=_depth)
+            class_resolution = forge.registry.get_class_by_id(k)
+            if class_resolution:
+                forge.LOG.debug('%s-----> Found class <%s> serialization, resolving...' % ('\t' * (_depth + 1),
+                                                                                          class_resolution.__name__))
+                serialization = class_resolution(**v)
+        if _depth == 1: forge.LOG.info('Final serial resolution: %r' % serialization)
+        return serialization

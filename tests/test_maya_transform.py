@@ -8,13 +8,13 @@ ms.initialize(name='forge')
 
 class TestTransformRename(TestBase):
     def test_encapsulation(self):
-        transform = forge.registry.MayaTransform(self.test_group)
+        transform = forge.registry.transform(self.test_group)
         transform.rename(name='blame', side='right')
         self.assertTrue(transform.name_short, 'r_blame_GRP')
         self.fixtures.append(transform.name_long)
 
     def test_creation(self):
-        transform = forge.registry.MayaTransform.create(name='name', side='left')
+        transform = forge.registry.transform.create(name='name', side='left')
         transform.rename(name='blame')
         self.assertIn('l_blame_GRP', transform.name_short)
         self.fixtures.append(transform.name_long)
@@ -23,7 +23,7 @@ class TestTransformRename(TestBase):
 class TestTransformDelete(TestBase):
     def test_encapsulation(self):
         mc.group(n='this_has_no_name')
-        transform = forge.registry.MayaTransform('this_has_no_name')
+        transform = forge.registry.transform('this_has_no_name')
         transform.rename(name='blame', side='right')
         self.assertTrue(transform.exists)
         transform.delete()
@@ -31,7 +31,7 @@ class TestTransformDelete(TestBase):
         self.fixtures.append(transform.name_long)
 
     def test_creation(self):
-        transform = forge.registry.MayaTransform.create(name='name', side='left')
+        transform = forge.registry.transform.create(name='name', side='left')
         transform.rename(name='blame')
         transform.delete()
         self.assertFalse(mc.objExists(transform.node))
@@ -41,8 +41,8 @@ class TestTransformDelete(TestBase):
 class TestTransformProperties(TestBase):
     def setUp(self):
         super(TestTransformProperties, self).setUp()
-        self.transform = forge.registry.MayaTransform(self.test_group)
-        self.transform_par = forge.registry.MayaTransform(self.test_group_parent)
+        self.transform = forge.registry.transform(self.test_group)
+        self.transform_par = forge.registry.transform(self.test_group_parent)
         self.transform.rename(name='test')
         self.transform_par.rename(name='test_parent')
         self.transform.parent(self.transform_par)
@@ -102,3 +102,29 @@ class TestTransformProperties(TestBase):
     def test_exists_false(self):
         self.transform.delete()
         self.assertFalse(self.transform.exists)
+
+
+class TestTransformSerialize(TestBase):
+    def test_encapsulation(self):
+        transform = forge.registry.transform(self.test_group)
+        transform.rename(name='blame', side='right')
+        self.assertEquals(transform.serialize(), {'MayaTransform': {'node_dag': u'r_blame_GRP'}})
+
+    def test_creation(self):
+        transform = forge.registry.transform.create(name='name', side='left')
+        transform.rename(name='blame')
+        self.assertEquals(transform.serialize(), {'MayaTransform': {'node_dag': u'l_blame_GRP'}})
+
+
+class TestTransformFromSerial(TestBase):
+    def test_encapsulation(self):
+        transform = forge.registry.transform(self.test_group)
+        transform.rename(name='blame', side='right', childtype='fucker')
+        self.assertEquals(forge.registry.transform.from_serial(transform.serialize()),
+                          transform)
+
+    def test_creation(self):
+        transform = forge.registry.transform.create(name='name', side='left', childtype='fucker')
+        transform.rename(name='blame')
+        self.assertEquals(forge.registry.transform.from_serial(transform.serialize()),
+                          transform)

@@ -156,7 +156,7 @@ def build_from_points(transforms, chain=False, parent=None, offset=False, freeze
         offset_names = nom.get_chain(len(transforms))
 
         for offset_name, joint in zip(offset_names, joints):
-            offset = forge.registry.transform.create(offset_name, joint)
+            offset = forge.registration.transform.create(offset_name, joint)
             joint.parent(offset)
             # Now we have to set the joint up with these orientations from the offset group
             pm.makeIdentity(joint, apply=True, t=1, r=1, s=1, n=0, pn=1)

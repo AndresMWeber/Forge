@@ -8,7 +8,7 @@ from .settings import MODE
 
 class Registry(object):
     node_constructors = []
-    required_nodes = ['Node', 'Transform', 'Curve', 'Control', 'Element', 'Joint']
+    required_nodes = ['Node', 'Transform', 'Curve', 'Control', 'Joint']
     utils = None
 
     @classmethod
@@ -47,14 +47,16 @@ class Registry(object):
 
     @staticmethod
     def maya_group(em=True, *args, **kwargs):
-        accepted_kwargs = []
         return mc.group(em=em)
 
     @staticmethod
-    def maya_curve(control_shape='cube', name='control'):
-        control = getattr(forge.shapes, control_shape)()
-        control = mc.rename(control, name)
-        return control
+    def maya_curve(control_shape='cube', name='control', **kwargs):
+        try:
+            control = getattr(forge.shapes, control_shape)(**kwargs)
+            control = mc.rename(control, name)
+            return control
+        except (RuntimeError, TypeError):
+            return mc.curve(d=1, p=[(1, 0, 0), (0, 0, -1), (-1, 0, 0), (0, 0, 1), (1, 0, 0)])
 
     @staticmethod
     def maya_locator(*args, **kwargs):
@@ -63,8 +65,8 @@ class Registry(object):
     @staticmethod
     def maya_semi_circle(constructionHistory=True, *args, **kwargs):
         circle = mc.circle(constructionHistory=constructionHistory, *args, **kwargs)[0]
-        median_cv = int(round(forge.registry.utils.curve.get_num_cvs(circle) / 2))
-        mc.xform(forge.registry.utils.curve.get_cvs(circle, slice_start=median_cv), r=1, s=[0, 0, 1])
+        median_cv = int(round(forge.registration.utils.curve.get_num_cvs(circle) / 2))
+        mc.xform(forge.registration.utils.curve.get_cvs(circle, slice_start=median_cv), r=1, s=[0, 0, 1])
         return circle
 
     @staticmethod
@@ -72,12 +74,14 @@ class Registry(object):
         return mc.circle(constructionHistory=constructionHistory, *args, **kwargs)[0]
 
     @staticmethod
-    def maya_curve(*args, **kwargs):
-        return mc.curve(*args, **kwargs)
-
-    @staticmethod
     def maya_meta_node(*args, **kwargs):
         return mc.createNode('network', *args, **kwargs)
+
+    def get_class_by_id(self, class_id):
+        try:
+            return getattr(self, class_id)
+        except AttributeError:
+            return None
 
     @classmethod
     def __iter__(cls):
