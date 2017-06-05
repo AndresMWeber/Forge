@@ -50,7 +50,7 @@ class AbstractTransform(node.AbstractNode):
                 self._rotate_to_obj(ref_xform)
 
         except exception.ValidationError:
-            forge.LOG.error("Invalid move type specified.")
+            self.LOG.error("Invalid move type specified.")
             raise
 
     def rotation(self, t=(0.0, 0.0, 0.0), world_space=True, q=True):

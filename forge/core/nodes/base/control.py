@@ -19,7 +19,7 @@ class AbstractControl(AbstractCurve):
         :param scale: float, value for scale of control
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         """
-        forge.LOG.info('Initializing <%s> with node_dag=%r, control_offset_grp=%r, control_con_grp=%r, kwargs=%s' % (
+        self.LOG.info('Initializing <%s> with node_dag=%r, control_offset_grp=%r, control_con_grp=%r, kwargs=%s' % (
             self.__class__.__name__, node_dag, control_offset_grp, control_con_grp, kwargs))
 
         super(AbstractControl, self).__init__(node_dag=node_dag, **kwargs)
@@ -54,7 +54,7 @@ class AbstractControl(AbstractCurve):
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         :return: Control
         """
-        forge.LOG.info('Creating <%s> with shape=%s, parent=%r, kwargs=%s' % (cls.__name__, shape, parent, kwargs))
+        cls.LOG.info('Creating <%s> with shape=%s, parent=%r, kwargs=%s' % (cls.__name__, shape, parent, kwargs))
         control = super(AbstractControl, cls).create()
         offset = forge.registry.transform.create()
         connection = forge.registry.transform.create()
@@ -78,7 +78,7 @@ class AbstractControl(AbstractCurve):
         control_instance.lock_channels(flattened_channels)
         control_instance.scale_shapes(scale)
 
-        forge.LOG.info('Created <%s>: %s' % (cls.__name__, control_instance))
+        cls.LOG.info('Created <%s>: %s' % (cls.__name__, control_instance))
         return control_instance
 
     def rename(self, **kwargs):
@@ -87,7 +87,7 @@ class AbstractControl(AbstractCurve):
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         :return: None
         """
-        forge.LOG.debug('Renaming this control with kwargs %s' % kwargs)
+        self.LOG.debug('Renaming this control with kwargs %s' % kwargs)
         super(AbstractControl, self).rename(**kwargs)
 
         if self.group_connection:
@@ -107,10 +107,10 @@ class AbstractControl(AbstractCurve):
 
         if use_offset_group and self.group_offset:
             self.group_offset.parent(target_parent=target_parent)
-            forge.LOG.debug('Parenting control offset group to %r' % target_parent)
+            self.LOG.debug('Parenting control offset group to %r' % target_parent)
         else:
             super(AbstractControl, self).parent(target_parent=target_parent)
-            forge.LOG.debug('Parenting control transform to %r' % target_parent)
+            self.LOG.debug('Parenting control transform to %r' % target_parent)
 
     def scale_shapes(self, scale_value):
         raise NotImplementedError

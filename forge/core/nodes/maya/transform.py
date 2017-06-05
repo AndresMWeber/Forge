@@ -27,7 +27,6 @@ class MayaTransform(MayaNode, AbstractTransform):
         return node
 
     @classmethod
-    @exception(forge.LOG)
     def create(cls, node_type='group', move_style='match', reference_transform_dag='', parent=None, *args, **kwargs):
         maya_transform = super(MayaTransform, cls).create(node_type='group', *args, **kwargs)
         if reference_transform_dag:
@@ -35,7 +34,7 @@ class MayaTransform(MayaNode, AbstractTransform):
             maya_transform.transform(move_style, reference_transform_dag)
 
         if parent:
-            forge.LOG.debug('Setting parent to %s' % parent)
+            cls.LOG.debug('Setting parent to %s' % parent)
             maya_transform.parent(parent)
 
         return maya_transform

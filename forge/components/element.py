@@ -1,24 +1,20 @@
 from six import iteritems
 from pprint import pformat
 import forge
+import forge.core.nodes.serializer as serializer
 import forge.settings as settings
 import nomenclate
 
+MODULE_LOGGER_LEVEL_OVERRIDE = None
+
 
 @forge.register_node
-class Element(object):
+class Element(serializer.SerializationMixin):
+    LOG = forge.settings.get_module_logger(__name__, module_override_level=MODULE_LOGGER_LEVEL_OVERRIDE)
     LAYOUT_GUIDE_JOINTS = {}
     VISIBILITY_TYPES = [settings.MODEL_TYPE, settings.JOINT_TYPE, settings.CONTROL_TYPE]
     ENUM_DISPLAY_TYPE = 'normal:template:reference'
     ENUM_VISIBILITY = 'on:off'
-    REGISTER_TYPES = [settings.CONTROL_TYPE,
-                      settings.JOINT_TYPE,
-                      settings.HIERARCHY_TYPE,
-                      settings.METADATA_TYPE]
-    SERIALIZABLE = []
-
-    from_serial = forge.registry.node.from_serial
-    imprint_serialization = forge.registry.node.imprint_serialization
 
     def __init__(self,
                  group_top='',
@@ -27,7 +23,7 @@ class Element(object):
                  group_controls='',
                  group_nodes='',
                  group_world='',
-                 parent='',
+                 parent='', 
                  scale=1.0,
                  **kwargs):
         for register_type in self.REGISTER_TYPES:
@@ -50,22 +46,22 @@ class Element(object):
 
     @classmethod
     def create(cls, **kwargs):
-        forge.LOG.info('Creating <%s>, kwargs %s' % (cls.__name__, pformat(kwargs, depth=1)))
-        forge.LOG.debug('Creating hierarchy...')
+        cls.LOG.info('Creating <%s>, kwargs %s' % (cls.__name__, pformat(kwargs, depth=1)))
+        cls.LOG.debug('Creating hierarchy...')
         kwargs.update(cls._create_hierarchy(**kwargs))
-        forge.LOG.debug('Creating joints...')
+        cls.LOG.debug('Creating joints...')
         kwargs.update(cls._create_joints(**kwargs))
-        forge.LOG.debug('Creating controls...')
+        cls.LOG.debug('Creating controls...')
         kwargs.update(cls._create_controls(**kwargs))
 
-        forge.LOG.debug('Finally Initializing <%s> instance with kwargs:\n%s' % (cls.__name__, pformat(kwargs)))
+        cls.LOG.debug('Finally Initializing <%s> instance with kwargs:\n%s' % (cls.__name__, pformat(kwargs)))
         element_instance = cls(**cls.from_serial(kwargs))
-        forge.LOG.debug('Setting up connections...')
+        cls.LOG.debug('Setting up connections...')
         element_instance.setup_connections()
-        forge.LOG.debug('Renaming all child nodes...')
+        cls.LOG.debug('Renaming all child nodes...')
         element_instance.rename()
 
-        forge.LOG.info('Finished creating AbstractElement %s' % pformat(element_instance.serialize()))
+        cls.LOG.info('Finished creating <%s>: %s' % (cls.__name__, pformat(element_instance.serialize())))
         element_instance.imprint_serialization()
         return element_instance
 
@@ -86,12 +82,12 @@ class Element(object):
         return [self.__getattribute__(node) for node in self.hierarchy]
 
     def register_nodes(self, nodes, node_type=None):
-        forge.LOG.debug('Registering attributes to %s of type %s: %s' % (self, node_type, str(nodes)))
+        self.LOG.debug('Registering attributes to %s of type %s: %s' % (self, node_type, str(nodes)))
         if node_type in self.REGISTER_TYPES:
             for node in nodes:
                 self.__getattribute__(node_type).append(node)
         else:
-            forge.LOG.warning('Node type specified %s not in registered types %s' % (node_type, self.REGISTER_TYPES))
+            self.LOG.warning('Node type specified %s not in registered types %s' % (node_type, self.REGISTER_TYPES))
 
     def parent(self, parent_target):
         self.group_top.parent(parent_target)
@@ -111,11 +107,11 @@ class Element(object):
             transform.add_attr(visibility_attr, 0, at='enum', enumName=self.ENUM_VISIBILITY, k=True)
 
     def connect_visibility_toggles(self, transforms, target_type='model'):
-        forge.LOG.debug('Connecting visibility toggles for MayaElement...')
+        self.LOG.debug('Connecting visibility toggles for MayaElement...')
         for transform in transforms:
             source_attr = self.group_top.get_attr_dag(attr='{TYPE}_visibility'.format(TYPE=target_type))
             target_attr = transform.get_attr_dag(attr='visibility')
-            forge.LOG.debug('\tConnecting vis attribute %s -> %s' % (source_attr, target_attr))
+            self.LOG.debug('\tConnecting vis attribute %s -> %s' % (source_attr, target_attr))
             forge.registry.utils.attr.connect_attr(source_attr, target_attr)
 
     def connect_display_type_toggles(self, transforms, target_type='model'):
@@ -193,20 +189,6 @@ class Element(object):
 
         self.nom.childtype = original_childtype
 
-    def serialize(self):
-        serialization = {}
-        for k, v in iteritems({register_type: getattr(self, register_type) for register_type in self.REGISTER_TYPES}):
-            v = v if isinstance(v, list) else list(v)
-            for item in v:
-                try:
-                    serialization[item] = getattr(self, item).serialize()
-                    forge.LOG.debug('Serialized Element item using its own method %s' % serialization[item])
-                except AttributeError:
-                    serialization[item] = str(getattr(self, item)).decode('utf-8')
-                    forge.LOG.debug('Serialized Element item using decode %s' % serialization[item])
-        forge.LOG.debug('<%s>.serialize() = %s' % (self.__class__.__name__, serialization))
-        return {self.__class__.__name__: serialization}
-
     @classmethod
     def factory(cls,
                 group_top='',
@@ -217,9 +199,9 @@ class Element(object):
                 group_world='',
                 *args,
                 **kwargs):
-        forge.LOG.debug('<%s>.factory running with dag node reference: %r' % (cls.__name__, group_top))
+        cls.LOG.debug('<%s>.factory running with dag node reference: %r' % (cls.__name__, group_top))
         if isinstance(group_top, dict):
-            forge.LOG.debug('\t\tDetected serialzation, deserializing and instancing with args %s' % group_top)
+            cls.LOG.debug('\t\tDetected serialzation, deserializing and instancing with args %s' % group_top)
             kwargs.update(group_top)
             kwargs.update(group_model)
             kwargs.update(group_joint)
@@ -229,7 +211,7 @@ class Element(object):
             return cls.from_serial(kwargs)
 
         elif issubclass(type(group_top), cls):
-            forge.LOG.debug('\t\tDetected subclass of %s...using input: %r' % (cls.__name__, group_top))
+            cls.LOG.debug('\t\tDetected subclass of %s...using input: %r' % (cls.__name__, group_top))
             return group_top
         else:
             return cls(group_top=group_top,
@@ -243,24 +225,24 @@ class Element(object):
 
     @classmethod
     def factory(cls, node_dag='', **kwargs):
-        forge.LOG.debug('<%s>.factory running with dag node reference: %r' % (cls.__name__, node_dag))
+        cls.LOG.debug('<%s>.factory running with dag node reference: %r' % (cls.__name__, node_dag))
         if isinstance(node_dag, dict):
-            forge.LOG.debug('\t\tDetected serialzation, deserializing and instancing with args %s' % node_dag)
+            cls.LOG.debug('\t\tDetected serialzation, deserializing and instancing with args %s' % node_dag)
             kwargs.update(node_dag)
             return cls.from_serial(kwargs)
 
         elif issubclass(type(node_dag), cls):
-            forge.LOG.debug('\t\tDetected subclass of %s...using input: %r' % (cls.__name__, node_dag))
+            cls.LOG.debug('\t\tDetected subclass of %s...using input: %r' % (cls.__name__, node_dag))
             return node_dag
 
         else:
-            forge.LOG.debug(
+            cls.LOG.debug(
                 '\t\tNo subclass or serialization, <%s>.__init__ as normal with %r' % (cls.__name__, node_dag))
             return cls(node_dag, **kwargs)
 
     def __del__(self):
         for node in self.yield_nodes:
-            forge.LOG.debug('deleting sub node %s' % node)
+            self.LOG.debug('deleting sub node %s' % node)
             forge.registry.utils.scene.safe_delete(str(node))
 
     def __str__(self):
@@ -269,3 +251,6 @@ class Element(object):
     def __eq__(self, other):
         print(self.hierarchy)
         return all([getattr(self, group) == getattr(other, group) for group in self.hierarchy])
+
+    def serialize(self):
+        return self.serialize_element()

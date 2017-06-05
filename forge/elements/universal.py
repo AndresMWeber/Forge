@@ -15,7 +15,7 @@ class Universal(forge.registry.Element):
         scale = float(scale)  # Ensuring we cast back to float in case it was serialized
         kwargs['name'] = kwargs.get('name', 'universal')
         super(Universal, self).__init__(**kwargs)
-        forge.LOG.debug(
+        self.LOG.debug(
             'Initializing <%s>\ncontrol_global_a=%r\ncontrol_global_b=%r\nkwargs=%s' % (self.__class__.__name__,
                                                                                         control_global_a,
                                                                                         control_global_b,

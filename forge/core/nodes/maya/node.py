@@ -87,14 +87,13 @@ class MayaNode(AbstractNode):
             pass
         self.set_attr(attr, value)
 
-    @exception(forge.LOG)
     def parent(self, target_parent, **kwargs):
-        forge.LOG.debug('Parenting a node %r to parent %r' % (self.node, target_parent))
+        self.LOG.debug('Parenting a node %r to parent %r' % (self.node, target_parent))
         try:
             mc.parent(self.node, MayaNode.factory(target_parent).node, **kwargs)
             return self.node
         except (RuntimeError, forge.exception.ValidationError):
-            forge.LOG.debug('Parenting unsuccessful')
+            self.LOG.debug('Parenting unsuccessful')
 
     def unparent(self):
         mc.parent(self.node, world=True)

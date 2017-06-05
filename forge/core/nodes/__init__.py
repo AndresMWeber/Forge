@@ -1,4 +1,5 @@
 import base
 import maya
+import serializer
 
-__all__ = ['base', 'maya']
+__all__ = ['serializer', 'base', 'maya']
