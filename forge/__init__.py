@@ -4,9 +4,11 @@ import exception
 import core
 import registration
 
+module_override_level = settings.CRITICAL
+
 __all__ = ['rig_lib', 'registration.py', 'settings', 'vendor', 'exception', 'core', 'components', 'templates']
 
-LOG = settings.get_module_logger(__name__, module_override_level=settings.INFO)
+LOG = settings.get_module_logger(__name__, module_override_level=module_override_level)
 
 shapes = registration.MayaControlShapeFactory
 registry = registration.Registry()
