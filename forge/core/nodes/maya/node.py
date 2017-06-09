@@ -161,10 +161,10 @@ class MayaNode(AbstractNode):
     def __getattr__(self, item):
         if not item in ['node', '_dag_path']:
             try:
-                return mc.getAttr('%s.%s' % (super(MayaNode, self).__getattribute__('node'), item))
+                return mc.getAttr('%s.%s' % (super(self.__class__, self).__getattribute__('node'), item))
             except (ValueError, AttributeError):
                 pass
-        return super(MayaNode, self).__getattr__(item)
+        return super(self.__class__, self).__getattr__(item)
 
     def tag(self, tag_attr=DEFAULT_TAG_ATTR):
         self.top_group.set_attr(tag_attr, self.serialize())

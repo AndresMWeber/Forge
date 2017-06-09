@@ -1,6 +1,7 @@
 import forge
 from .curve import AbstractCurve
 from forge.core.channels import (VISIBILITY, LEVEL_PRIMARY, SCALE)
+import inspect
 
 
 @forge.register_node
@@ -112,12 +113,6 @@ class AbstractControl(AbstractCurve):
             super(AbstractControl, self).parent(target_parent=target_parent)
             self.LOG.debug('Parenting control transform to %r' % target_parent)
 
-    def scale_shapes(self, scale_value):
-        raise NotImplementedError
-
-    def swap_shape(self, shape='cube', maintain_offset=True, add=False):
-        raise NotImplementedError
-
     def serialize(self):
         return {self.__class__.__name__: {
             'node_dag': self.node,
@@ -125,5 +120,20 @@ class AbstractControl(AbstractCurve):
             'control_con_grp': self.group_connection.serialize(),
             'scale': self.scale}}
 
-    def __str__(self):
-        return '|%s|%s|%s' % (self.group_offset.name_short, self.node, self.group_connection.name_short)
+    def setup_hierarchy(self, parent=None):
+        """ Sets up a hierarchical pattern for instance between its constituent nodes.
+
+        :param parent: str, forge.core.nodes.maya.MayaNode, either a subclass of MayaNode or a string to a maya dag.
+        :return: None
+        """
+        self.parent(self.group_offset, use_offset_group=False)
+        self.group_connection.parent(self)
+        self.parent(parent)
+
+    def __repr__(self):
+        nodes = [self.node]
+        if self.group_connection is not None:
+            nodes.append(self.group_connection.name_short)
+        if self.group_offset:
+            nodes.insert(0, self.group_offset.name_short)
+        return '|'.join(nodes)

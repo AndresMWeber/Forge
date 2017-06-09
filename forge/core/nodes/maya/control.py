@@ -4,7 +4,7 @@ from forge.core.nodes.base.control import AbstractControl
 
 
 @forge.register_node
-class MayaControl(MayaCurve, AbstractControl):
+class MayaControl(AbstractControl, MayaCurve):
     """
     class for building templates control
     """

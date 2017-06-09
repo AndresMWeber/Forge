@@ -10,7 +10,6 @@ __all__ = ['rig_lib', 'registration.py', 'settings', 'vendor', 'exception', 'cor
 
 LOG = settings.get_module_logger(__name__, module_override_level=module_override_level)
 
-shapes = registration.MayaControlShapeFactory
 registry = registration.Registry()
 register_node = registry.register_node
 
@@ -18,25 +17,21 @@ import forge.core.core_utils.base_utils
 
 LOG.info('Successfully loaded module %s' % forge.core.core_utils.base_utils.__name__)
 import forge.core.core_utils.maya_utils
-
 LOG.info('Successfully loaded module %s' % forge.core.core_utils.maya_utils.__name__)
 
 # Registering all necessary functions/nodes with registry.
 LOG.info('starting set_default_utils')
-registry.set_default_utils(mode=settings.MODE)
+registry.set_default_utils()
 
 LOG.info('starting control shapes registration')
-import forge.core.core_utils.maya_utils.control_shapes
-
-LOG.info('Successfully loaded module %s' % forge.core.core_utils.maya_utils.control_shapes.__name__)
+registry.set_default_shapes()
 
 LOG.info('starting nodes registration')
 import forge.core.nodes
-
 LOG.info('Successfully loaded module %s' % forge.core.nodes.__name__)
 
 LOG.info('starting set_default_nodes')
-registry.set_default_nodes(mode=settings.MODE)
+registry.set_default_nodes()
 
 # LOG.info('Importing all rig components')
 import forge.components

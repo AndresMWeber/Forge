@@ -3,7 +3,7 @@ import forge
 from ..serializer import SerializationMixin
 
 utils = forge.registry.utils
-MODULE_LOGGER_LEVEL_OVERRIDE = None
+MODULE_LOGGER_LEVEL_OVERRIDE = forge.settings.DEBUG
 
 
 @forge.register_node
