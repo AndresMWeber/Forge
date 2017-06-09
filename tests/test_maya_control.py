@@ -176,6 +176,10 @@ class TestControlCreate(TestBaseControl):
         control = forge.registry.Control.create(scale=4.0, name='name', side='left', childtype='fucker')
         self.assertEquals(control.scale, 4.0)
 
+    def test_creation_scale_default(self):
+        control = forge.registry.Control.create(name='name', side='left', childtype='fucker')
+        self.assertEquals(control.scale, 1.0)
+
     def test_creation_parent(self):
         test_group = mc.group(em=True)
         control = forge.registry.Control.create(parent=test_group, name='name', side='left', childtype='fucker')
