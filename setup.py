@@ -26,9 +26,7 @@ with open(convert_path('%s/version.py' % __package__)) as ver_file:
     exec (ver_file.read(), main_ns)
 __version__ = main_ns['__version__']
 
-filepath = join(abspath(dirname(__file__)))
-
-with codecs.open(filepath, 'README.rst', encoding='utf-8') as readme_file:
+with codecs.open(join(abspath(dirname(__file__)), 'README.rst'), encoding='utf-8') as readme_file:
     __long_description__ = readme_file.read()
 
 
