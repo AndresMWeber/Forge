@@ -169,7 +169,7 @@ class TestControlFactory(TestBaseControl):
 class TestControlCreate(TestBaseControl):
     def test_creation_no_kwargs(self):
         control = forge.registry.Control.create()
-        print(forge.registry.utils.scene.get_scene_tree())
+        control.LOG.info(forge.registry.utils.scene.get_scene_tree())
         self.assertEquals(repr(control), 'untitled_OGP|untitled_CTR|untitled_CGP')
 
     def test_creation_scale(self):
@@ -179,18 +179,18 @@ class TestControlCreate(TestBaseControl):
     def test_creation_parent(self):
         test_group = mc.group(em=True)
         control = forge.registry.Control.create(parent=test_group, name='name', side='left', childtype='fucker')
-        print(forge.registry.utils.scene.get_scene_tree())
+        control.LOG.info(forge.registry.utils.scene.get_scene_tree())
         self.assertEquals(mc.listRelatives(control.group_offset, p=True)[0], test_group)
 
     def test_creation_parent_control(self):
         test_group = mc.group(em=True)
         control = forge.registry.Control.create(parent=test_group, name='name', side='left', childtype='fucker')
-        print(forge.registry.utils.scene.get_scene_tree())
+        control.LOG.info(forge.registry.utils.scene.get_scene_tree())
         self.assertEquals(mc.listRelatives(control.group_offset, p=True)[0], test_group)
 
     def test_creation_shape(self):
         control = forge.registry.Control.create(shape='arrow_directional', name='name', side='left', childtype='fucker')
-        print(forge.registry.utils.scene.get_scene_tree())
+        control.LOG.info(forge.registry.utils.scene.get_scene_tree())
         self.assertEquals(len(mc.ls(control.node + '.cv[:]', fl=True)), 83)
 
 

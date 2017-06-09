@@ -60,7 +60,6 @@ class MayaCurve(MayaTransform, AbstractCurve):
         """
         if not add:
             mc.delete(self.get_shapes(types=MayaCurve.ENGINE_TYPE))
-        print('shape attr gotten for shape %s: %s' % (shape, getattr(forge.registry, shape)))
         target_shape_transform = MayaCurve(node_dag=getattr(forge.registry, shape))
         shapes = target_shape_transform.get_children(type=MayaCurve.ENGINE_TYPE)
         mc.parent([shape.node for shape in shapes], self.node, relative=not maintain_offset, shape=True)

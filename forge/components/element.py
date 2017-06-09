@@ -249,7 +249,6 @@ class Element(serializer.SerializationMixin):
         return self.group_top.node
 
     def __eq__(self, other):
-        print(self.hierarchy)
         return all([getattr(self, group) == getattr(other, group) for group in self.hierarchy])
 
     def serialize(self):

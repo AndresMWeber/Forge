@@ -65,16 +65,17 @@ class Registry(object):
         for node_constructor in self.node_constructors:
             if node_constructor.__name__ == item:
                 return node_constructor
+
         # See if it's a registered shape
         shape_dict = self.registered_shapes.get(item, {}).copy()
-        print('Querying registry for shape %s with shape dict: %s' % (item, shape_dict))
         if shape_dict:
             func = getattr(self.utils.create, shape_dict.pop('constructor'))
-            print('Construction function found and located in registry %s' % (func))
             return func(**shape_dict)
 
         # Otherwise Default
         self.__getattribute__(item)
 
     def __dir__(self):
-        return dir(type(self)) + list(self.__dict__) + [node.__name__ for node in self.node_constructors]
+        node_constructors = [node.__name__ for node in self.node_constructors]
+        registered_shapes = list(self.registered_shapes)
+        return dir(type(self)) + list(self.__dict__) + node_constructors + registered_shapes

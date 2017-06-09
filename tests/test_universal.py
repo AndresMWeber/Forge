@@ -67,9 +67,6 @@ class TestUniversalSerialize(TestBaseUniversal):
         universal = forge.registry.Universal.create(side='left')
         forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
 
-        print(universal.group_top.metaforge)
-        print(self.deep_sort(universal.group_top.get_attr(forge.settings.DEFAULT_TAG_ATTR)))
-        print(self.deep_sort(json.loads(json.dumps(universal.serialize()))))
         self.assertEquals(self.deep_sort(universal.group_top.get_attr(forge.settings.DEFAULT_TAG_ATTR)),
                           self.deep_sort(json.loads(json.dumps(universal.serialize()))))
 
