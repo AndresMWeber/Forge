@@ -30,11 +30,11 @@ class AbstractControl(AbstractCurve):
         self.scale = float(scale)  # Ensuring we cast back to float in case it was serialized
 
         if control_offset_grp:
-            self.group_offset = forge.registry.transform.factory(control_offset_grp)
+            self.group_offset = forge.registry.Transform.factory(control_offset_grp)
             self.group_offset.INTERNAL_TYPE = 'offset_group'
 
         if control_con_grp:
-            self.group_connection = forge.registry.transform.factory(control_con_grp)
+            self.group_connection = forge.registry.Transform.factory(control_con_grp)
             self.group_connection.INTERNAL_TYPE = 'connection_group'
 
         if rename:
@@ -57,8 +57,8 @@ class AbstractControl(AbstractCurve):
         """
         cls.LOG.info('Creating <%s> with shape=%s, parent=%r, kwargs=%s' % (cls.__name__, shape, parent, kwargs))
         control = super(AbstractControl, cls).create()
-        offset = forge.registry.transform.create()
-        connection = forge.registry.transform.create()
+        offset = forge.registry.Transform.create()
+        connection = forge.registry.Transform.create()
 
         control.parent(offset)
         connection.parent(control)

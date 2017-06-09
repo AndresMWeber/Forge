@@ -31,7 +31,7 @@ class MayaNode(AbstractNode):
 
     @staticmethod
     def create_engine_instance(*args, **kwargs):
-        node = forge.registry.maya_group(*args, **kwargs)
+        node = forge.registry.utils.create.group(*args, **kwargs)
         return node
 
     @staticmethod

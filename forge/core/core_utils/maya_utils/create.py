@@ -12,7 +12,7 @@ def group(em=True, *args, **kwargs):
 
 def curve(**kwargs):
     try:
-        mc.curve(**kwargs)
+        return mc.curve(**kwargs)
     except RuntimeError:
         return mc.curve(d=1, p=[(1, 0, 0), (0, 0, -1), (-1, 0, 0), (0, 0, 1), (1, 0, 0)])
 

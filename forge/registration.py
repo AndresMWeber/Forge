@@ -1,6 +1,6 @@
 import forge
 import yaml
-from six import iteritems
+import os
 from .exception import ValidationError
 from .settings import MODE
 
@@ -42,8 +42,9 @@ class Registry(object):
             forge.LOG.error('Could not register utils.' % MODE)
 
     @staticmethod
-    def get_shapes_config(self):
-        return yaml.load('shapes.yml')
+    def get_shapes_config():
+        stream = open(os.path.join(os.path.dirname(__file__), "shapes.yml"), "r")
+        return yaml.load(stream)
 
     def set_default_shapes(self, mode=MODE):
         self.registered_shapes = self.get_shapes_config()
@@ -65,10 +66,12 @@ class Registry(object):
             if node_constructor.__name__ == item:
                 return node_constructor
         # See if it's a registered shape
-        shape_dict = self.registered_shapes.get(item, None)
+        shape_dict = self.registered_shapes.get(item, {}).copy()
+        print('Querying registry for shape %s with shape dict: %s' % (item, shape_dict))
         if shape_dict:
-            func = shape_dict.pop('func')
-            return getattr(self.utils.create, func)(**shape_dict)
+            func = getattr(self.utils.create, shape_dict.pop('constructor'))
+            print('Construction function found and located in registry %s' % (func))
+            return func(**shape_dict)
 
         # Otherwise Default
         self.__getattribute__(item)

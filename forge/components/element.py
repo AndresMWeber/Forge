@@ -30,12 +30,12 @@ class Element(serializer.SerializationMixin):
             setattr(self, register_type, list())
         self.nom = nomenclate.Nom(**kwargs)
 
-        self.group_top = forge.registry.transform.factory(group_top)
-        self.group_model = forge.registry.transform.factory(group_model)
-        self.group_joint = forge.registry.transform.factory(group_joint)
-        self.group_controls = forge.registry.transform.factory(group_controls)
-        self.group_nodes = forge.registry.transform.factory(group_nodes)
-        self.group_world = forge.registry.transform.factory(group_world)
+        self.group_top = forge.registry.Transform.factory(group_top)
+        self.group_model = forge.registry.Transform.factory(group_model)
+        self.group_joint = forge.registry.Transform.factory(group_joint)
+        self.group_controls = forge.registry.Transform.factory(group_controls)
+        self.group_nodes = forge.registry.Transform.factory(group_nodes)
+        self.group_world = forge.registry.Transform.factory(group_world)
         self.scale = scale
 
         self.register_nodes(['group_top', 'group_model', 'group_joint', 'group_nodes', 'group_world', 'group_controls'],
@@ -123,12 +123,12 @@ class Element(serializer.SerializationMixin):
 
     @classmethod
     def _create_hierarchy(cls, **kwargs):
-        group_top = forge.registry.transform.create()
-        group_model = forge.registry.transform.create(parent=group_top)
-        group_joint = forge.registry.transform.create(parent=group_top)
-        group_nodes = forge.registry.transform.create(parent=group_top)
-        group_world = forge.registry.transform.create(parent=group_top)
-        group_controls = forge.registry.transform.create(parent=group_top)
+        group_top = forge.registry.Transform.create()
+        group_model = forge.registry.Transform.create(parent=group_top)
+        group_joint = forge.registry.Transform.create(parent=group_top)
+        group_nodes = forge.registry.Transform.create(parent=group_top)
+        group_world = forge.registry.Transform.create(parent=group_top)
+        group_controls = forge.registry.Transform.create(parent=group_top)
 
         return {'group_top': group_top.serialize(),
                 'group_model': group_model.serialize(),

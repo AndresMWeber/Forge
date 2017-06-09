@@ -1,4 +1,4 @@
-from base_test import TestBase
+from .base_test import TestBase
 import maya.standalone as ms
 import maya.cmds as mc
 import forge
@@ -11,12 +11,12 @@ ms.initialize(name='forge')
 class TestBaseElement(TestBase):
     @staticmethod
     def encapsulation_node_creation():
-        return {'group_top': forge.registry.maya_group(),
-                'group_model': forge.registry.maya_group(),
-                'group_joint': forge.registry.maya_group(),
-                'group_controls': forge.registry.maya_group(),
-                'group_nodes': forge.registry.maya_group(),
-                'group_world': forge.registry.maya_group()
+        return {'group_top': forge.registry.utils.create.group(),
+                'group_model': forge.registry.utils.create.group(),
+                'group_joint': forge.registry.utils.create.group(),
+                'group_controls': forge.registry.utils.create.group(),
+                'group_nodes': forge.registry.utils.create.group(),
+                'group_world': forge.registry.utils.create.group()
                 }
 
 

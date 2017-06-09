@@ -4,7 +4,7 @@ scene = forge.registry.utils.scene
 
 @forge.register_node
 class Chain(object):
-    NODE_TYPE = forge.registry.transform
+    NODE_TYPE = forge.registry.Transform
 
     def __init__(self, nodes):
         self.nodes = []

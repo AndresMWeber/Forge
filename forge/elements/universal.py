@@ -21,8 +21,8 @@ class Universal(forge.registry.Element):
                                                                                         control_global_b,
                                                                                         pformat(kwargs)))
 
-        self.control_global_a = forge.registry.control.factory(node_dag=control_global_a, scale=scale)
-        self.control_global_b = forge.registry.control.factory(node_dag=control_global_b, scale=scale * .8)
+        self.control_global_a = forge.registry.Control.factory(node_dag=control_global_a, scale=scale)
+        self.control_global_b = forge.registry.Control.factory(node_dag=control_global_b, scale=scale * .8)
         self.register_nodes(['control_global_a', 'control_global_b'], node_type=settings.CONTROL_TYPE)
 
     def setup_connections(self):
@@ -52,8 +52,8 @@ class Universal(forge.registry.Element):
     @classmethod
     def _create_controls(cls, scale=3.0, **kwargs):
         serialized = super(Universal, cls)._create_controls(scale=3.0, **kwargs)
-        control_global_a = forge.registry.control.create(shape='circle', scale=scale)
-        control_global_b = forge.registry.control.create(shape='circle',
+        control_global_a = forge.registry.Control.create(shape='circle', scale=scale)
+        control_global_b = forge.registry.Control.create(shape='circle',
                                                          scale=scale * 0.8,
                                                          parent=control_global_a.group_connection)
         control_global_a.rotate_shapes((90, 0, 0))
