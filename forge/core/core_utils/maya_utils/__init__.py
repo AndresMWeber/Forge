@@ -2,7 +2,8 @@ import transformation
 import hierarchy
 import attr
 import curve
+import create
 import joint
 import scene
 
-__all__ = ['transformation', 'hierarchy', 'attr', 'curve', 'joint', 'scene', 'control_shapes']
+__all__ = ['create', 'transformation', 'hierarchy', 'attr', 'curve', 'joint', 'scene']

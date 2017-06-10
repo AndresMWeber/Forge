@@ -27,9 +27,9 @@ class TestBase(unittest.TestCase):
         test_parent_grp = 'test_parent'
         test_grp = '%s|test_GRP' % test_parent_grp
 
-        self.test_group = test_grp if mc.objExists(test_grp) else forge.registry.maya_group(n='test', em=True)
-        self.test_group_parent = test_parent_grp if mc.objExists(test_parent_grp) else forge.registry.maya_group(
-            n='test_parent')
+        self.test_group = test_grp if mc.objExists(test_grp) else forge.registry.utils.create.group(n='test', em=True)
+        self.test_group_parent = test_parent_grp if mc.objExists(
+            test_parent_grp) else forge.registry.utils.create.group(n='test_parent')
 
         self.fixtures.append(self.test_group)
         self.fixtures.append(self.test_group_parent)

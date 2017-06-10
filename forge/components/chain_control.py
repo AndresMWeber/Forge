@@ -4,4 +4,4 @@ import chain
 
 @forge.register_node
 class ChainControl(chain.Chain):
-    NODE_TYPE = forge.registry.control
+    NODE_TYPE = forge.registry.Control

@@ -2,14 +2,12 @@ import maya.api.OpenMaya as oM
 import maya.cmds as mc
 import simplejson
 from forge.core import colors
-from forge.core.nodes.base.node import AbstractNode
+from forge.core.nodes.abstract.node import AbstractNode
 
 import forge
 from forge.core import channels
 from forge.exception import exception, ValidationError
 from forge.settings import DEFAULT_TAG_ATTR
-
-utils = forge.registry.utils
 
 
 @forge.register_node
@@ -31,7 +29,7 @@ class MayaNode(AbstractNode):
 
     @staticmethod
     def create_engine_instance(*args, **kwargs):
-        node = forge.registry.maya_group(*args, **kwargs)
+        node = forge.registry.utils.create.group(*args, **kwargs)
         return node
 
     @staticmethod
@@ -58,23 +56,24 @@ class MayaNode(AbstractNode):
 
     def lock_channels(self, channels_to_lock):
         for attr in self.flatten_compound_channels(self.node, channels_to_lock):
-            utils.attr.set_attr(self.get_attr_dag(attr), lock=True, keyable=False)
+            self.LOG.info('Functions in utils.attr: %s' % dir(forge.registry.utils.attr))
+            forge.registry.utils.attr.set_attr(self.get_attr_dag(attr), lock=True, keyable=False)
 
     def set_attr(self, attr, value, **kwargs):
         value = simplejson.dumps(value) if isinstance(value, dict) else value
         attr_dag = self.get_attr_dag(attr)
 
         if isinstance(value, (list, tuple)):
-            utils.attr.set_attr(attr_dag, *value, **kwargs)
+            forge.registry.utils.attr.set_attr(attr_dag, *value, **kwargs)
         elif isinstance(value, str):
-            utils.attr.set_attr(attr_dag, value, type='string')
+            forge.registry.utils.attr.set_attr(attr_dag, value, type='string')
         else:
-            utils.attr.set_attr(attr_dag, value, **kwargs)
+            forge.registry.utils.attr.set_attr(attr_dag, value, **kwargs)
 
         return self.get_attr(attr)
 
     def get_attr(self, attr):
-        value = utils.attr.get_attr(self.get_attr_dag(attr))
+        value = forge.registry.utils.attr.get_attr(self.get_attr_dag(attr))
         try:
             return simplejson.loads(value)
         except (ValueError, TypeError):
@@ -82,19 +81,18 @@ class MayaNode(AbstractNode):
 
     def add_attr(self, attr, value, **kwargs):
         try:
-            utils.attr.add_attr(self.node, ln=attr, **kwargs)
+            forge.registry.utils.attr.add_attr(self.node, ln=attr, **kwargs)
         except RuntimeError:
             pass
         self.set_attr(attr, value)
 
-    @exception(forge.LOG)
     def parent(self, target_parent, **kwargs):
-        forge.LOG.debug('Parenting a node %r to parent %r' % (self.node, target_parent))
+        self.LOG.debug('Parenting a node %r to parent %r' % (self.node, target_parent))
         try:
             mc.parent(self.node, MayaNode.factory(target_parent).node, **kwargs)
             return self.node
         except (RuntimeError, forge.exception.ValidationError):
-            forge.LOG.debug('Parenting unsuccessful')
+            self.LOG.debug('Parenting unsuccessful')
 
     def unparent(self):
         mc.parent(self.node, world=True)
@@ -162,10 +160,10 @@ class MayaNode(AbstractNode):
     def __getattr__(self, item):
         if not item in ['node', '_dag_path']:
             try:
-                return mc.getAttr('%s.%s' % (super(MayaNode, self).__getattribute__('node'), item))
+                return mc.getAttr('%s.%s' % (super(self.__class__, self).__getattribute__('node'), item))
             except (ValueError, AttributeError):
                 pass
-        return super(MayaNode, self).__getattr__(item)
+        return super(self.__class__, self).__getattr__(item)
 
     def tag(self, tag_attr=DEFAULT_TAG_ATTR):
         self.top_group.set_attr(tag_attr, self.serialize())

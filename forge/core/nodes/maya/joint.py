@@ -1,5 +1,5 @@
 import maya.cmds as mc
-from forge.core.nodes.base.joint import AbstractJoint
+from forge.core.nodes.abstract.joint import AbstractJoint
 
 import forge
 from forge.core.nodes.maya.transform import MayaTransform
@@ -14,6 +14,7 @@ class MayaJoint(MayaTransform, AbstractJoint):
     def __init__(self, node_dag='', *args, **kwargs):
         super(MayaJoint, self).__init__(node_dag=node_dag, *args, **kwargs)
 
+    @staticmethod
     def create_engine_instance(node_type='group', *args, **kwargs):
         return mc.joint()
 

@@ -2,7 +2,7 @@ from itertools import chain
 
 import maya.cmds as mc
 from forge.core.core_utils.maya_utils import curve as util_curve
-from forge.core.nodes.base.curve import AbstractCurve
+from forge.core.nodes.abstract.curve import AbstractCurve
 
 import forge
 from forge.core.nodes.maya.transform import MayaTransform
@@ -19,7 +19,7 @@ class MayaCurve(MayaTransform, AbstractCurve):
     @staticmethod
     def create_engine_instance(node_type='group', *args, **kwargs):
         # Default Diamond shape.
-        return forge.registry.maya_curve()
+        return forge.registry.utils.create.curve()
 
     def __init__(self, node_dag='', *args, **kwargs):
         super(MayaCurve, self).__init__(node_dag=node_dag, *args, **kwargs)
@@ -60,8 +60,7 @@ class MayaCurve(MayaTransform, AbstractCurve):
         """
         if not add:
             mc.delete(self.get_shapes(types=MayaCurve.ENGINE_TYPE))
-
-        target_shape_transform = forge.registry.curve(getattr(forge.shapes, shape)())
+        target_shape_transform = MayaCurve(node_dag=getattr(forge.registry, shape))
         shapes = target_shape_transform.get_children(type=MayaCurve.ENGINE_TYPE)
         mc.parent([shape.node for shape in shapes], self.node, relative=not maintain_offset, shape=True)
         forge.registry.utils.scene.safe_delete(target_shape_transform)

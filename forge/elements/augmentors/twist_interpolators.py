@@ -11,14 +11,14 @@ class TwistInterpolators(forge.registry.Element):
                  scale=1.0,
                  **kwargs):
         super(TwistInterpolators, self).__init__(**kwargs)
-        self.joints = [forge.registration.control.factory(joint) for joint_pair in joints for joint in joint_pair]
-        print 'deserialized joints ', self.joints
+        self.joints = [forge.registry.control.factory(joint) for joint_pair in joints for joint in joint_pair]
+        self.LOG.info('Deserialized joints %s' % self.joints)
         self.register_nodes(self.joints, node_type=settings.JOINT_TYPE)
 
     def setup_connections(self):
         super(self.__class__, self).setup_connections()
         for joint in self.joints:
-            print 'parenting joint ', joint
+            self.LOG.info('parenting joint %s' % joint)
             joint.parent(self.group_joints)
 
     def rename(self, **kwargs):
@@ -38,7 +38,7 @@ class TwistInterpolators(forge.registry.Element):
     @classmethod
     def _create_joints(cls, source_joints, **kwargs):
         joints = super(TwistInterpolators, cls)._create_joints()
-        print 'creating jointsttststs'
+        cls.LOG.info('Creating joints...')
         joints['twist_joint_chains'] = []
 
         if source_joints:

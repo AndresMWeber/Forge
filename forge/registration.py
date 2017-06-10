@@ -1,13 +1,12 @@
-import maya.cmds as mc
-from six import add_metaclass
-
 import forge
+import yaml
+import os
 from .exception import ValidationError
-from .settings import MODE
 
 
 class Registry(object):
     node_constructors = []
+    registered_shapes = {}
     required_nodes = ['Node', 'Transform', 'Curve', 'Control', 'Joint']
     utils = None
 
@@ -17,65 +16,52 @@ class Registry(object):
             forge.LOG.debug('Successfully added Node %s to registry' % other.__name__)
             cls.node_constructors.append(other)
 
+    def swap_mode(self, mode):
+        forge.LOG.info('Converting registry to mode: %s' % mode)
+        self.mode = mode
+        self.set_default_utils()
+        self.set_default_shapes()
+        self.set_default_nodes()
+
     @classmethod
     def register_node(cls, node):
         forge.LOG.debug('Attempting to add Node %s to registry' % node.__name__)
         cls.add(node)
         return node
 
-    def set_default_nodes(self, mode=MODE):
+    def set_default_nodes(self):
         try:
-            forge.LOG.info('Registering nodes for mode: %s' % mode)
+            forge.LOG.info('Registering nodes for mode: %s' % self.mode)
             for required_node in self.required_nodes:
-                setattr(self, required_node.lower(), getattr(forge.registry, MODE.title() + required_node))
-                forge.LOG.info('Registered node as forge.registry.%s' % required_node.lower())
-            forge.LOG.info('Successfully registered all required nodes')
+                setattr(self, required_node, getattr(forge.registry, self.mode.title() + required_node))
+                forge.LOG.info('\t\tRegistered node as forge.registry.%s' % required_node)
+            forge.LOG.info('\tSuccessfully registered all required nodes')
         except ValidationError:
-            forge.LOG.error('Could not register nodes; not all required nodes were registered.' % mode)
+            forge.LOG.error('\tCould not register nodes; not all required nodes were registered.' % self.mode)
 
-    def set_default_utils(self, mode=MODE):
+    def set_default_utils(self):
         try:
-            forge.LOG.info('Registering utils for mode: %s' % mode)
-            self.utils = getattr(forge.core.core_utils, '%s_utils' % mode)
-            forge.LOG.info('Successfully registered as forge.registry.utils')
+            forge.LOG.info('Registering utils for mode: %s' % self.mode)
+            self.utils = getattr(forge.core.core_utils, '%s_utils' % self.mode)
+            forge.LOG.info('\tSuccessfully registered as forge.registry.utils with sub-modules %s' %
+                           [func for func in dir(self.utils) if not func.startswith('__')])
         except ValidationError:
-            forge.LOG.error('Could not register utils.' % mode)
+            forge.LOG.error('\tCould not register utils.' % self.mode)
+
+    def set_default_shapes(self):
+        forge.LOG.info('Registering shapes:')
+        self.registered_shapes = self.get_shapes_config()
+        forge.LOG.info('\tSuccessfully registered shapes %s' % list(self.registered_shapes))
+        self.shape_constructors = list(self.registered_shapes)
 
     @staticmethod
-    def maya_joint(*args, **kwargs):
-        return mc.joint(*args, **kwargs)
+    def get_shapes_config():
+        stream = open(os.path.join(os.path.dirname(__file__), "shapes.yml"), "r")
+        return yaml.load(stream)
 
-    @staticmethod
-    def maya_group(em=True, *args, **kwargs):
-        return mc.group(em=em)
-
-    @staticmethod
-    def maya_curve(control_shape='cube', name='control', **kwargs):
-        try:
-            control = getattr(forge.shapes, control_shape)(**kwargs)
-            control = mc.rename(control, name)
-            return control
-        except (RuntimeError, TypeError):
-            return mc.curve(d=1, p=[(1, 0, 0), (0, 0, -1), (-1, 0, 0), (0, 0, 1), (1, 0, 0)])
-
-    @staticmethod
-    def maya_locator(*args, **kwargs):
-        return mc.spaceLocator(*args, **kwargs)
-
-    @staticmethod
-    def maya_semi_circle(constructionHistory=True, *args, **kwargs):
-        circle = mc.circle(constructionHistory=constructionHistory, *args, **kwargs)[0]
-        median_cv = int(round(forge.registration.utils.curve.get_num_cvs(circle) / 2))
-        mc.xform(forge.registration.utils.curve.get_cvs(circle, slice_start=median_cv), r=1, s=[0, 0, 1])
-        return circle
-
-    @staticmethod
-    def maya_circle(constructionHistory=True, *args, **kwargs):
-        return mc.circle(constructionHistory=constructionHistory, *args, **kwargs)[0]
-
-    @staticmethod
-    def maya_meta_node(*args, **kwargs):
-        return mc.createNode('network', *args, **kwargs)
+    @classmethod
+    def __iter__(cls):
+        return iter(cls.node_constructors)
 
     def get_class_by_id(self, class_id):
         try:
@@ -83,59 +69,22 @@ class Registry(object):
         except AttributeError:
             return None
 
-    @classmethod
-    def __iter__(cls):
-        return iter(cls.node_constructors)
-
     def __getattr__(self, item):
+        # See whether it's a node constructor
         for node_constructor in self.node_constructors:
             if node_constructor.__name__ == item:
                 return node_constructor
-        else:
-            self.__getattribute__(item)
+
+        # See if it's a registered shape
+        shape_dict = self.registered_shapes.get(item, {}).copy()
+        if shape_dict:
+            func = getattr(self.utils.create, shape_dict.pop('constructor'))
+            return func(**shape_dict)
+
+        # Otherwise Default
+        self.__getattribute__(item)
 
     def __dir__(self):
-        return dir(type(self)) + list(self.__dict__) + [node.__name__ for node in self.node_constructors]
-
-
-class RegistryMetaclass(type):
-    registered_methods = {}
-
-    @classmethod
-    def help(cls):
-        return list(cls.registered_methods)
-
-    def __getattr__(self, item):
-        func = self.registered_methods.get(item)
-        if func:
-            return func
-        raise AttributeError('No registered method:', item)
-
-
-@add_metaclass(RegistryMetaclass)
-class MayaControlShapeFactory(object):
-    @staticmethod
-    def register_shape(**kwargs_outer):
-        strip_kwarg = lambda strip_key, kdict: kdict.pop(strip_key)
-
-        def decorator(f):
-            forge.LOG.debug('Registering Function %s to the MayaControlShapeFactory' % f.__name__)
-
-            def union_the_kwargs_and_call(**kwargs):
-                kwargs.update(kwargs_outer)
-                try:
-                    func = strip_kwarg('func', kwargs)
-                    if func.__name__ == 'maya_curve':
-                        kwargs['p'] = f()
-                    return func(**kwargs)
-                except KeyError:
-                    return f(**kwargs)
-
-            MayaControlShapeFactory.registered_methods[f.__name__] = union_the_kwargs_and_call
-            return f
-
-        return decorator
-
-    @staticmethod
-    def strip_kwarg(strip_key, kwargs):
-        return kwargs.pop(strip_key)
+        node_constructors = [node.__name__ for node in self.node_constructors]
+        registered_shapes = list(self.registered_shapes)
+        return dir(type(self)) + list(self.__dict__) + node_constructors + registered_shapes

@@ -1,0 +1,13 @@
+# .coveragerc
+[report]
+show_missing = True
+
+[run]
+omit =
+    *__init__*
+    forge/version.py
+    forge/settings.py
+    forge/exception.py
+    forge/vendor/cgLogging/cgLogging.py
+    forge/core/colors.py
+    forge/core/channels.py

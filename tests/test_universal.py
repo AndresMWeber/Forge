@@ -1,4 +1,4 @@
-from base_test import TestBase
+from .base_test import TestBase
 import maya.standalone as ms
 import maya.cmds as mc
 import forge
@@ -9,16 +9,20 @@ ms.initialize(name='forge')
 
 
 class TestBaseUniversal(TestBase):
+    def setUp(self):
+        forge.registry.swap_mode(forge.settings.MAYA)
+        super(TestBaseUniversal, self).setUp()
+
     @staticmethod
     def encapsulation_node_creation():
-        return {'group_top': forge.registry.maya_group(),
-                'group_model': forge.registry.maya_group(),
-                'group_joint': forge.registry.maya_group(),
-                'group_controls': forge.registry.maya_group(),
-                'group_nodes': forge.registry.maya_group(),
-                'group_world': forge.registry.maya_group(),
-                'control_global_a': forge.registry.maya_curve(p=[(1, 0, 0), (0, 1, 1), (0, 1, 0), (0, 0, 1)]),
-                'control_global_b': forge.registry.maya_curve(p=[(1, 0, 0), (0, 1, 1), (0, 1, 0), (0, 0, 1)]),
+        return {'group_top': forge.registry.utils.create.group(),
+                'group_model': forge.registry.utils.create.group(),
+                'group_joint': forge.registry.utils.create.group(),
+                'group_controls': forge.registry.utils.create.group(),
+                'group_nodes': forge.registry.utils.create.group(),
+                'group_world': forge.registry.utils.create.group(),
+                'control_global_a': forge.registry.utils.create.curve(p=[(1, 0, 0), (0, 1, 1), (0, 1, 0), (0, 0, 1)]),
+                'control_global_b': forge.registry.utils.create.curve(p=[(1, 0, 0), (0, 1, 1), (0, 1, 0), (0, 0, 1)]),
                 }
 
 
@@ -67,9 +71,6 @@ class TestUniversalSerialize(TestBaseUniversal):
         universal = forge.registry.Universal.create(side='left')
         forge.LOG.info('\n%s' % pformat(forge.registry.utils.scene.get_scene_tree()))
 
-        print(universal.group_top.metaforge)
-        print(self.deep_sort(universal.group_top.get_attr(forge.settings.DEFAULT_TAG_ATTR)))
-        print(self.deep_sort(json.loads(json.dumps(universal.serialize()))))
         self.assertEquals(self.deep_sort(universal.group_top.get_attr(forge.settings.DEFAULT_TAG_ATTR)),
                           self.deep_sort(json.loads(json.dumps(universal.serialize()))))
 

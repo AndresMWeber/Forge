@@ -1,5 +1,5 @@
 import maya.cmds as mc
-from forge.core.nodes.base.transform import AbstractTransform
+from forge.core.nodes.abstract.transform import AbstractTransform
 from forge.core.nodes.maya.node import MayaNode
 
 import forge
@@ -19,15 +19,14 @@ class MayaTransform(MayaNode, AbstractTransform):
     @staticmethod
     def create_engine_instance(node_type='group', *args, **kwargs):
         if node_type in ['group']:
-            node = forge.registry.maya_group(*args, **kwargs)
+            node = forge.registry.utils.create.group(*args, **kwargs)
         elif node_type in ['locator']:
-            node = forge.registry.maya_locator(*args, **kwargs)
+            node = forge.registry.utils.create.locator(*args, **kwargs)
         else:
             raise ValidationError("Unsupported transform type input %s." % node_type)
         return node
 
     @classmethod
-    @exception(forge.LOG)
     def create(cls, node_type='group', move_style='match', reference_transform_dag='', parent=None, *args, **kwargs):
         maya_transform = super(MayaTransform, cls).create(node_type='group', *args, **kwargs)
         if reference_transform_dag:
@@ -35,7 +34,7 @@ class MayaTransform(MayaNode, AbstractTransform):
             maya_transform.transform(move_style, reference_transform_dag)
 
         if parent:
-            forge.LOG.debug('Setting parent to %s' % parent)
+            cls.LOG.debug('Setting parent to %s' % parent)
             maya_transform.parent(parent)
 
         return maya_transform

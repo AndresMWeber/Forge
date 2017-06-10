@@ -19,7 +19,7 @@ class AbstractControl(AbstractCurve):
         :param scale: float, value for scale of control
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         """
-        forge.LOG.info('Initializing <%s> with node_dag=%r, control_offset_grp=%r, control_con_grp=%r, kwargs=%s' % (
+        self.LOG.info('Initializing <%s> with node_dag=%r, control_offset_grp=%r, control_con_grp=%r, kwargs=%s' % (
             self.__class__.__name__, node_dag, control_offset_grp, control_con_grp, kwargs))
 
         super(AbstractControl, self).__init__(node_dag=node_dag, **kwargs)
@@ -29,11 +29,11 @@ class AbstractControl(AbstractCurve):
         self.scale = float(scale)  # Ensuring we cast back to float in case it was serialized
 
         if control_offset_grp:
-            self.group_offset = forge.registry.transform.factory(control_offset_grp)
+            self.group_offset = forge.registry.Transform.factory(control_offset_grp)
             self.group_offset.INTERNAL_TYPE = 'offset_group'
 
         if control_con_grp:
-            self.group_connection = forge.registry.transform.factory(control_con_grp)
+            self.group_connection = forge.registry.Transform.factory(control_con_grp)
             self.group_connection.INTERNAL_TYPE = 'connection_group'
 
         if rename:
@@ -54,10 +54,10 @@ class AbstractControl(AbstractCurve):
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         :return: Control
         """
-        forge.LOG.info('Creating <%s> with shape=%s, parent=%r, kwargs=%s' % (cls.__name__, shape, parent, kwargs))
+        cls.LOG.info('Creating <%s> with shape=%s, parent=%r, kwargs=%s' % (cls.__name__, shape, parent, kwargs))
         control = super(AbstractControl, cls).create()
-        offset = forge.registry.transform.create()
-        connection = forge.registry.transform.create()
+        offset = forge.registry.Transform.create()
+        connection = forge.registry.Transform.create()
 
         control.parent(offset)
         connection.parent(control)
@@ -78,7 +78,7 @@ class AbstractControl(AbstractCurve):
         control_instance.lock_channels(flattened_channels)
         control_instance.scale_shapes(scale)
 
-        forge.LOG.info('Created <%s>: %s' % (cls.__name__, control_instance))
+        cls.LOG.info('Created <%s>: %s' % (cls.__name__, control_instance))
         return control_instance
 
     def rename(self, **kwargs):
@@ -87,7 +87,7 @@ class AbstractControl(AbstractCurve):
         :param kwargs: dict, any possible extra naming kwargs for renaming this node as defined in env.yml in nomenclate
         :return: None
         """
-        forge.LOG.debug('Renaming this control with kwargs %s' % kwargs)
+        self.LOG.debug('Renaming this control with kwargs %s' % kwargs)
         super(AbstractControl, self).rename(**kwargs)
 
         if self.group_connection:
@@ -107,16 +107,10 @@ class AbstractControl(AbstractCurve):
 
         if use_offset_group and self.group_offset:
             self.group_offset.parent(target_parent=target_parent)
-            forge.LOG.debug('Parenting control offset group to %r' % target_parent)
+            self.LOG.debug('Parenting control offset group to %r' % target_parent)
         else:
             super(AbstractControl, self).parent(target_parent=target_parent)
-            forge.LOG.debug('Parenting control transform to %r' % target_parent)
-
-    def scale_shapes(self, scale_value):
-        raise NotImplementedError
-
-    def swap_shape(self, shape='cube', maintain_offset=True, add=False):
-        raise NotImplementedError
+            self.LOG.debug('Parenting control transform to %r' % target_parent)
 
     def serialize(self):
         return {self.__class__.__name__: {
@@ -125,5 +119,20 @@ class AbstractControl(AbstractCurve):
             'control_con_grp': self.group_connection.serialize(),
             'scale': self.scale}}
 
-    def __str__(self):
-        return '|%s|%s|%s' % (self.group_offset.name_short, self.node, self.group_connection.name_short)
+    def setup_hierarchy(self, parent=None):
+        """ Sets up a hierarchical pattern for instance between its constituent nodes.
+
+        :param parent: str, forge.core.nodes.maya.MayaNode, either a subclass of MayaNode or a string to a maya dag.
+        :return: None
+        """
+        self.parent(self.group_offset, use_offset_group=False)
+        self.group_connection.parent(self)
+        self.parent(parent)
+
+    def __repr__(self):
+        nodes = [self.node]
+        if self.group_connection is not None:
+            nodes.append(self.group_connection.name_short)
+        if self.group_offset:
+            nodes.insert(0, self.group_offset.name_short)
+        return '|'.join(nodes)
