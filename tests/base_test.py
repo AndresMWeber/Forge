@@ -16,7 +16,7 @@ tearDown_count = 0
 
 class TestBase(unittest.TestCase):
     def setUp(self):
-        print('Initializing maya_utils standalone...')
+        forge.LOG.info('Initializing maya_utils standalone...')
 
         global setUp_count
         forge.LOG.info('setup has run %d times.' % setUp_count)
