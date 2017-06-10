@@ -1,5 +1,5 @@
 import maya.cmds as mc
-from forge.core.nodes.base.joint import AbstractJoint
+from forge.core.nodes.abstract.joint import AbstractJoint
 
 import forge
 from forge.core.nodes.maya.transform import MayaTransform

@@ -86,28 +86,28 @@ class AbstractNode(SerializationMixin):
         raise NotImplementedError
 
     def set_attr(self, attr, value):
-        raise NotImplementedError
+        forge.registry.utils.attr.set_attr(attr, value)
 
     def lock_channels(self, channels):
-        raise NotImplementedError
+        return True
 
     def set_color(self, nomenclate_object=None, level=0):
-        raise NotImplementedError
+        return True
 
     def remove(self):
-        raise NotImplementedError
+        return True
 
     def insert_parent(self, replacement_parent):
-        raise NotImplementedError
+        return True
 
     def parent(self, target_parent, **kwargs):
-        raise NotImplementedError
+        return True
 
     def get_parent(self, level=1):
-        raise NotImplementedError
+        return ''
 
     def get_children(self, type='transform'):
-        raise NotImplementedError
+        return True
 
     def strip_namespace(self, name):
         return name.split(self._char_namespace)[-1]
@@ -134,11 +134,11 @@ class AbstractNode(SerializationMixin):
 
     @staticmethod
     def validate_node(node_name):
-        raise NotImplementedError
+        return isinstance(node_name, str)
 
     @staticmethod
     def flatten_compound_channels(xform, channels):
-        raise NotImplementedError
+        return True
 
     def __repr__(self):
         if hasattr(self, '__str__'):

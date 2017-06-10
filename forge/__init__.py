@@ -1,46 +1,28 @@
-import settings
-import templates
-import exception
-import core
-import registration
+from . import settings
+from . import templates
+from . import exception
+from . import core
+from . import registration
 
-module_override_level = settings.CRITICAL
+__all__ = ['rig_lib', 'registration', 'settings', 'vendor', 'exception', 'core', 'components', 'templates']
 
-__all__ = ['rig_lib', 'registration.py', 'settings', 'vendor', 'exception', 'core', 'components', 'templates']
-
-LOG = settings.get_module_logger(__name__, module_override_level=module_override_level)
-
+LOG = settings.get_module_logger(__name__, module_override_level=settings.INFO)
+LOG.info('Utils module has these components %s' % dir(core.core_utils.maya_utils))
 registry = registration.Registry()
 register_node = registry.register_node
 
-import forge.core.core_utils.base_utils
-
-LOG.info('Successfully loaded module %s' % forge.core.core_utils.base_utils.__name__)
-import forge.core.core_utils.maya_utils
-LOG.info('Successfully loaded module %s' % forge.core.core_utils.maya_utils.__name__)
-
-# Registering all necessary functions/nodes with registry.
-LOG.info('starting set_default_utils')
-registry.set_default_utils()
-
-LOG.info('starting control shapes registration')
-registry.set_default_shapes()
-
-LOG.info('starting nodes registration')
+LOG.info('Starting nodes registration')
 import forge.core.nodes
 LOG.info('Successfully loaded module %s' % forge.core.nodes.__name__)
 
-LOG.info('starting set_default_nodes')
-registry.set_default_nodes()
+registry.swap_mode(settings.MODE)
 
-# LOG.info('Importing all rig components')
+LOG.info('Importing all rig components')
 import forge.components
-
-# LOG.info('Successfully loaded module %s' % forge.components.__name__)
+LOG.info('Successfully loaded module %s' % forge.components.__name__)
 
 LOG.info('Importing all rig elements')
 import forge.elements
-
 LOG.info('Successfully loaded module %s' % forge.elements.__name__)
 
 

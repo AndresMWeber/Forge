@@ -9,6 +9,10 @@ ms.initialize(name='forge')
 
 
 class TestBaseUniversal(TestBase):
+    def setUp(self):
+        forge.registry.swap_mode(forge.settings.MAYA)
+        super(TestBaseUniversal, self).setUp()
+
     @staticmethod
     def encapsulation_node_creation():
         return {'group_top': forge.registry.utils.create.group(),

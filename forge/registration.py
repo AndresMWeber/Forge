@@ -2,7 +2,6 @@ import forge
 import yaml
 import os
 from .exception import ValidationError
-from .settings import MODE
 
 
 class Registry(object):
@@ -17,6 +16,13 @@ class Registry(object):
             forge.LOG.debug('Successfully added Node %s to registry' % other.__name__)
             cls.node_constructors.append(other)
 
+    def swap_mode(self, mode):
+        forge.LOG.info('Converting registry to mode: %s' % mode)
+        self.mode = mode
+        self.set_default_utils()
+        self.set_default_shapes()
+        self.set_default_nodes()
+
     @classmethod
     def register_node(cls, node):
         forge.LOG.debug('Attempting to add Node %s to registry' % node.__name__)
@@ -25,40 +31,43 @@ class Registry(object):
 
     def set_default_nodes(self):
         try:
-            forge.LOG.info('Registering nodes for mode: %s' % MODE)
+            forge.LOG.info('Registering nodes for mode: %s' % self.mode)
             for required_node in self.required_nodes:
-                setattr(self, required_node, getattr(forge.registry, MODE.title() + required_node))
-                forge.LOG.info('Registered node as forge.registry.%s' % required_node.lower())
-            forge.LOG.info('Successfully registered all required nodes')
+                setattr(self, required_node, getattr(forge.registry, self.mode.title() + required_node))
+                forge.LOG.info('\t\tRegistered node as forge.registry.%s' % required_node)
+            forge.LOG.info('\tSuccessfully registered all required nodes')
         except ValidationError:
-            forge.LOG.error('Could not register nodes; not all required nodes were registered.' % MODE)
+            forge.LOG.error('\tCould not register nodes; not all required nodes were registered.' % self.mode)
 
     def set_default_utils(self):
         try:
-            forge.LOG.info('Registering utils for mode: %s' % MODE)
-            self.utils = getattr(forge.core.core_utils, '%s_utils' % MODE)
-            forge.LOG.info('Successfully registered as forge.registry.utils')
+            forge.LOG.info('Registering utils for mode: %s' % self.mode)
+            self.utils = getattr(forge.core.core_utils, '%s_utils' % self.mode)
+            forge.LOG.info('\tSuccessfully registered as forge.registry.utils with sub-modules %s' %
+                           [func for func in dir(self.utils) if not func.startswith('__')])
         except ValidationError:
-            forge.LOG.error('Could not register utils.' % MODE)
+            forge.LOG.error('\tCould not register utils.' % self.mode)
+
+    def set_default_shapes(self):
+        forge.LOG.info('Registering shapes:')
+        self.registered_shapes = self.get_shapes_config()
+        forge.LOG.info('\tSuccessfully registered shapes %s' % list(self.registered_shapes))
+        self.shape_constructors = list(self.registered_shapes)
 
     @staticmethod
     def get_shapes_config():
         stream = open(os.path.join(os.path.dirname(__file__), "shapes.yml"), "r")
         return yaml.load(stream)
 
-    def set_default_shapes(self, mode=MODE):
-        self.registered_shapes = self.get_shapes_config()
-        self.shape_constructors = list(self.registered_shapes)
+    @classmethod
+    def __iter__(cls):
+        return iter(cls.node_constructors)
 
     def get_class_by_id(self, class_id):
         try:
             return getattr(self, class_id)
         except AttributeError:
             return None
-
-    @classmethod
-    def __iter__(cls):
-        return iter(cls.node_constructors)
 
     def __getattr__(self, item):
         # See whether it's a node constructor

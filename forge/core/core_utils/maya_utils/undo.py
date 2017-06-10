@@ -1,6 +1,4 @@
-
 import maya.cmds as mc
-import contextlib
 
 
 class UndoChunk():
@@ -20,24 +18,24 @@ class UnitContext(object):
         self.kwargs = kwargs
         self.oldlin, self.oldang, self.oldtim = None, None, None
     def __enter__(self):
-        self.oldlin = pmc.currentUnit(q=True, linear=True)
-        self.oldang = pmc.currentUnit(q=True, angle=True)
-        self.oldtim = pmc.currentUnit(q=True, time=True)
-        pmc.currentUnit(*self.args, **self.kwargs)
+        self.oldlin = mc.currentUnit(q=True, linear=True)
+        self.oldang = mc.currentUnit(q=True, angle=True)
+        self.oldtim = mc.currentUnit(q=True, time=True)
+        mc.currentUnit(*self.args, **self.kwargs)
     def __exit__(self, *_):
         if self.oldlin is not None:
-            pmc.currentUnit(linear=self.oldlin)
+            mc.currentUnit(linear=self.oldlin)
         if self.oldang is not None:
-            pmc.currentUnit(angle=self.oldang)
+            mc.currentUnit(angle=self.oldang)
         if self.oldtim is not None:
-            pmc.currentUnit(time=self.oldtim)
+            mc.currentUnit(time=self.oldtim)
 
 class RenderLayerContext(object):
     def __init__(self, renderlayer):
         self.renderlayer = renderlayer
         self.orig_layer = None
     def __enter__(self):
-        self.orig_layer = pmc.nodetypes.RenderLayer.currentLayer()
+        self.orig_layer = mc.nodetypes.RenderLayer.currentLayer()
         self.renderlayer.setCurrent()
     def __exit__(self, *_):
         if self.orig_layer is not None:
@@ -51,9 +49,9 @@ class NamespaceContext(object):
         self.ns = ns
         self.oldns = None
     def __enter__(self):
-        self.oldns = pmc.namespaceInfo(currentNamespace=True)
-        pmc.namespace(setNamespace=self.ns)
+        self.oldns = mc.namespaceInfo(currentNamespace=True)
+        mc.namespace(setNamespace=self.ns)
     def __exit__(self, *_):
         if self.oldns is not None:
             oldns = ':' + self.oldns.lstrip(':')
-            pmc.namespace(setNamespace=oldns)
+            mc.namespace(setNamespace=oldns)

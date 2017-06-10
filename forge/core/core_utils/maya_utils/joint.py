@@ -1,8 +1,5 @@
 import nomenclate
-# import pymel.core as pm
-
-import forge
-import transformation
+from . import transformation
 
 nom = nomenclate.Nom()
 
@@ -113,7 +110,7 @@ def build_from_points(transforms, chain=False, parent=None, offset=False, freeze
     Args:
         transforms [[float,float,float]] or [pm.nt.Transform]: 
             list of transforms xyz coordinate + euler rotation based or pm.nt.Transform
-        prefix (str): base name for the chain
+        prefix (str): abstract name for the chain
         chain (bool): whether or not to make a chain, or isolated joints
         offset (bool): whether or not to build in offset groups for the joints
         parent (pm.nt.Transform): final parent of the joints, empty if kept at root level
@@ -156,7 +153,7 @@ def build_from_points(transforms, chain=False, parent=None, offset=False, freeze
         offset_names = nom.get_chain(len(transforms))
 
         for offset_name, joint in zip(offset_names, joints):
-            offset = forge.registration.transform.create(offset_name, joint)
+            offset = mc.group(em=True)
             joint.parent(offset)
             # Now we have to set the joint up with these orientations from the offset group
             pm.makeIdentity(joint, apply=True, t=1, r=1, s=1, n=0, pn=1)
@@ -199,7 +196,7 @@ def build_between_points(start_xform, end_xform, n_joints, freeze=True, chain=Tr
     Args:
         start_xform [pm.nt.Transform]: starting position
         end_xform [pm.nt.Transform]: ending position
-        name (str): base name for the chain
+        name (str): abstract name for the chain
         chain (bool): whether or not to make a chain, or isolated joints
         offset (bool): whether or not to build in offset groups for the joints
         parent (pm.nt.Transform): final parent of the joints, empty if kept at root level

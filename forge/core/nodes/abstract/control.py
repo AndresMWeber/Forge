@@ -1,7 +1,6 @@
 import forge
 from .curve import AbstractCurve
 from forge.core.channels import (VISIBILITY, LEVEL_PRIMARY, SCALE)
-import inspect
 
 
 @forge.register_node

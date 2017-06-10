@@ -33,6 +33,7 @@ CONTROL_TYPE = 'control'
 HIERARCHY_TYPE = 'hierarchy'
 METADATA_TYPE = 'metadata'
 
+BASE = 'abstract'
 MAYA = 'maya'
 NUKE = 'nuke'
 HOUDINI = 'houdini'

@@ -7,6 +7,10 @@ ms.initialize(name='forge')
 
 
 class TestBaseControl(TestBase):
+    def setUp(self):
+        forge.registry.swap_mode(forge.settings.MAYA)
+        super(TestBaseControl, self).setUp()
+
     @staticmethod
     def encapsulation_node_creation():
         return {'node_dag': forge.registry.utils.create.curve(),
