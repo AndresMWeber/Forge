@@ -4,6 +4,9 @@ import maya.cmds as mc
 import forge
 from pprint import pformat
 from collections import OrderedDict
+import logging
+
+forge.LOG.setLevel(logging.CRITICAL)
 
 ms.initialize(name='forge')
 

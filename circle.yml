@@ -5,7 +5,6 @@ machine:
 dependencies:
     override:
       - pip install docker-compose
-      - pip install coveralls
     pre:
       - docker build --rm=false -t forge .
 

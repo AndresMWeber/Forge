@@ -1,6 +1,6 @@
 Forge: Just another autorigger
 ###################################################################################################
-`Online Documentation (ReadTheDocs) <http://mayasig-cli.readthedocs.io/en/latest/#module-maya_signatures.commands.scrape>`_
+`Online Documentation (ReadTheDocs) <http://rigforge.readthedocs.io/en/latest/>`_
 
 .. image:: https://badge.fury.io/py/Forge.svg
     :target: https://badge.fury.io/py/Forge
@@ -8,7 +8,7 @@ Forge: Just another autorigger
 .. image:: https://circleci.com/gh/AndresMWeber/Forge.svg?style=shield&circle-token=:circle-token
     :target: https://circleci.com/gh/AndresMWeber/Forge/
 
-.. image:: https://coveralls.io/repos/github/AndresMWeber/forge/badge.svg?branch=master
+.. image:: https://coveralls.io/repos/github/AndresMWeber/forge/badge.svg?branch=master?dummy
     :target: https://coveralls.io/github/AndresMWeber/Forge?branch=master
 
 .. image:: https://landscape.io/github/AndresMWeber/Forge/master/landscape.svg?style=flat
@@ -48,7 +48,7 @@ A universal installation method (that works on Windows, Mac OS X, Linux, …, an
 
 
 (If ``pip`` installation fails for some reason, you can try
-``easy_install mayaSigScraper-cli`` as a fallback.)
+``easy_install forge`` as a fallback.)
 
 Usage
 =============
