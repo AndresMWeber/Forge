@@ -127,7 +127,7 @@ class TestControlGetParent(TestBaseAbstractControl):
     def test_from_encapsulation(self):
         nodes = self.encapsulation_node_creation()
         nodes.pop('control_offset_grp')
-        control = forge.registry.AbstractControl.create(**nodes)
+        control = forge.registry.AbstractControl(**nodes)
         self.assertEquals(control.get_parent(), '')
         self.fixtures.append(control)
 
