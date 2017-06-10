@@ -13,7 +13,7 @@ test:
   override:
     - docker run -it forge bash -c "mayapy -m nose /Forge/tests --with-coverage --cover-package=forge"
   post:
-    - coveralls
+    - docker run -it forge bash -c "coveralls"
 
 deployment:
   production:
