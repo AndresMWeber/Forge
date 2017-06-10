@@ -6,8 +6,8 @@ from . import registration
 
 __all__ = ['rig_lib', 'registration', 'settings', 'vendor', 'exception', 'core', 'components', 'templates']
 
-LOG = settings.get_module_logger(__name__, module_override_level=settings.INFO)
-LOG.info('Utils module has these components %s' % dir(core.core_utils.maya_utils))
+LOG = settings.get_module_logger(__name__, module_override_level=None)
+
 registry = registration.Registry()
 register_node = registry.register_node
 
