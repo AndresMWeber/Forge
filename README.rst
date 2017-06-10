@@ -8,7 +8,7 @@ Forge: Just another autorigger
 .. image:: https://circleci.com/gh/AndresMWeber/Forge.svg?style=shield&circle-token=:circle-token
     :target: https://circleci.com/gh/AndresMWeber/Forge/
 
-.. image:: https://coveralls.io/repos/github/AndresMWeber/forge/badge.svg?branch=master?dummy
+.. image:: https://coveralls.io/repos/github/AndresMWeber/forge/badge.svg?branch=master
     :target: https://coveralls.io/github/AndresMWeber/Forge?branch=master
 
 .. image:: https://landscape.io/github/AndresMWeber/Forge/master/landscape.svg?style=flat
