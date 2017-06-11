@@ -3,16 +3,17 @@ machine:
     - docker
 
 dependencies:
-    override:
-      - pip install docker-compose
-    pre:
-      - docker build --rm=false -t forge .
+  override:
+    - pip install docker-compose coveralls
+  pre:
+    - docker build --rm=false -t forge .
 
 test:
   override:
-    - docker run -it forge bash -c "mayapy -m nose /Forge/tests --with-coverage --cover-package=forge"
+    - docker run -i -v ${PWD}:/Forge forge
   post:
     - coveralls
+
 
 deployment:
   production:
