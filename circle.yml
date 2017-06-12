@@ -12,7 +12,7 @@ test:
   override:
     - docker run -i -v ${PWD}/Forge:/Forge forge
   post:
-    - coveralls
+    - cd /Forge && coveralls
 
 
 deployment:
