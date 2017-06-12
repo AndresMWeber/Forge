@@ -1,9 +1,6 @@
 from .base_test import TestBase
-import maya.standalone as ms
 import forge
 import maya.cmds as mc
-
-ms.initialize(name='forge')
 
 
 class TestBaseControl(TestBase):

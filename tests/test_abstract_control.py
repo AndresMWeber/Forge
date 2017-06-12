@@ -1,13 +1,5 @@
 from .base_test import TestBase
-import maya.standalone as ms
 import forge
-
-# forge\core\nodes\abstract\control.py
-# 100-103, 109-110, 128-130
-
-
-
-ms.initialize(name='forge')
 
 
 class TestBaseAbstractControl(TestBase):

@@ -1,11 +1,8 @@
 from .base_test import TestBase
-import maya.standalone as ms
 import maya.cmds as mc
 import forge
 import json
 from pprint import pformat
-
-ms.initialize(name='forge')
 
 
 class TestBaseUniversal(TestBase):
