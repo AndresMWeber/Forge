@@ -2,9 +2,15 @@ Forge: Just another autorigger
 ###################################################################################################
 `Online Documentation (ReadTheDocs) <http://rigforge.readthedocs.io/en/latest/>`_
 
+.. image:: https://img.shields.io/badge/license-MIT-blue.svg
+    :target: https://raw.githubusercontent.com/AndresMWeber/Forge/master/LICENSE
+    
 .. image:: https://badge.fury.io/py/Forge.svg
     :target: https://badge.fury.io/py/Forge
-
+    
+.. image:: https://img.shields.io/github/issues/AndresMWeber/Forge.svg
+    :target: https://github.com/AndresMWeber/Forge/issues
+    
 .. image:: https://circleci.com/gh/AndresMWeber/Forge.svg?style=shield&circle-token=:circle-token
     :target: https://circleci.com/gh/AndresMWeber/Forge/
 
@@ -13,8 +19,20 @@ Forge: Just another autorigger
 
 .. image:: https://landscape.io/github/AndresMWeber/Forge/master/landscape.svg?style=flat
     :target: https://landscape.io/github/AndresMWeber/Forge/master
-    :alt: Code Health
-
+    
+.. image:: https://codeclimate.com/github/AndresMWeber/Forge/badges/gpa.svg
+   :target: https://codeclimate.com/github/AndresMWeber/Forge
+   
+.. image:: https://codeclimate.com/github/AndresMWeber/Forge/badges/issue_count.svg
+   :target: https://codeclimate.com/github/AndresMWeber/Forge
+   :alt: Issue Count
+   
+.. image:: https://www.versioneye.com/user/projects/593e29396725bd0060f1cdc4/badge.svg
+    :target: https://www.versioneye.com/user/projects/593e29396725bd0060f1cdc4?child=summary
+    
+.. image:: https://img.shields.io/waffle/label/AndresMWeber/Forge/in%20progress.svg
+    :target: https://waffle.io/AndresMWeber/Forge
+    
 .. contents::
 
 .. section-numbering::
