@@ -23,10 +23,6 @@ Forge: Just another autorigger
 .. image:: https://codeclimate.com/github/AndresMWeber/Forge/badges/gpa.svg
    :target: https://codeclimate.com/github/AndresMWeber/Forge
    
-.. image:: https://codeclimate.com/github/AndresMWeber/Forge/badges/issue_count.svg
-   :target: https://codeclimate.com/github/AndresMWeber/Forge
-   :alt: Issue Count
-   
 .. image:: https://www.versioneye.com/user/projects/593e29396725bd0060f1cdc4/badge.svg
     :target: https://www.versioneye.com/user/projects/593e29396725bd0060f1cdc4?child=summary
 
