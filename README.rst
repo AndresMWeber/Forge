@@ -7,6 +7,9 @@ Forge: Just another autorigger
     
 .. image:: https://badge.fury.io/py/Forge.svg
     :target: https://badge.fury.io/py/Forge
+
+.. image:: https://img.shields.io/waffle/label/AndresMWeber/Forge/in%20progress.svg
+    :target: https://waffle.io/AndresMWeber/Forge
     
 .. image:: https://img.shields.io/github/issues/AndresMWeber/Forge.svg
     :target: https://github.com/AndresMWeber/Forge/issues
@@ -16,21 +19,15 @@ Forge: Just another autorigger
 
 .. image:: https://coveralls.io/repos/github/AndresMWeber/Forge/badge.svg?branch=master
     :target: https://coveralls.io/github/AndresMWeber/Forge?branch=master
-
-.. image:: https://landscape.io/github/AndresMWeber/Forge/master/landscape.svg?style=flat
-    :target: https://landscape.io/github/AndresMWeber/Forge/master
     
 .. image:: https://codeclimate.com/github/AndresMWeber/Forge/badges/gpa.svg
-   :target: https://codeclimate.com/github/AndresMWeber/Forge
-   
-.. image:: https://www.versioneye.com/user/projects/593e29396725bd0060f1cdc4/badge.svg
-    :target: https://www.versioneye.com/user/projects/593e29396725bd0060f1cdc4?child=summary
+   :target: https://codeclimate.com/github/AndresMWeber/Forge   
 
 .. image:: https://api.codacy.com/project/badge/Grade/d19b2899a7b8415d960bfa4a5e580599
     :target: https://www.codacy.com/app/AndresMWeber/Forge?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AndresMWeber/Forge&amp;utm_campaign=Badge_Grade
 
-.. image:: https://img.shields.io/waffle/label/AndresMWeber/Forge/in%20progress.svg
-    :target: https://waffle.io/AndresMWeber/Forge
+.. image:: https://www.versioneye.com/user/projects/593e29396725bd0060f1cdc4/badge.svg
+    :target: https://www.versioneye.com/user/projects/593e29396725bd0060f1cdc4?child=summary
     
 .. contents::
 
