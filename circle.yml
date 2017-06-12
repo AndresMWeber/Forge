@@ -10,9 +10,9 @@ dependencies:
 
 test:
   override:
-    - docker run -i -v ${PWD}/forge:/forge forge
+    - docker run -i -v ${PWD}:/Forge forge
   post:
-    - cd forge && coveralls
+    - coveralls
 
 
 deployment:
