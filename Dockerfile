@@ -1,6 +1,8 @@
-FROM mottosso/maya:2016sp1
+FROM daemonecles/centos6-maya:2017
 
 MAINTAINER andresmweber@gmail.com
+
+ADD . /Forge
 
 # Need to enable execution rights on all test files just in case
 RUN wget https://bootstrap.pypa.io/get-pip.py && \
