@@ -12,4 +12,4 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && \
 
 WORKDIR /Forge
 
-ENTRYPOINT mayapy -m nose --with-coverage --cover-package=forge /forge/tests
+ENTRYPOINT mayapy -m nose --with-coverage --cover-package=forge
