@@ -1,5 +1,9 @@
 Forge: Just another autorigger
 ###################################################################################################
+
+.. image:: https://api.codacy.com/project/badge/Grade/d19b2899a7b8415d960bfa4a5e580599
+   :alt: Codacy Badge
+   :target: https://www.codacy.com/app/AndresMWeber/Forge?utm_source=github.com&utm_medium=referral&utm_content=AndresMWeber/Forge&utm_campaign=badger
 `Online Documentation (ReadTheDocs) <http://rigforge.readthedocs.io/en/latest/>`_
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg
