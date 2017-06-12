@@ -29,7 +29,10 @@ Forge: Just another autorigger
    
 .. image:: https://www.versioneye.com/user/projects/593e29396725bd0060f1cdc4/badge.svg
     :target: https://www.versioneye.com/user/projects/593e29396725bd0060f1cdc4?child=summary
-    
+
+.. image:: https://api.codacy.com/project/badge/Grade/d19b2899a7b8415d960bfa4a5e580599
+    :target: https://www.codacy.com/app/AndresMWeber/Forge?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AndresMWeber/Forge&amp;utm_campaign=Badge_Grade
+
 .. image:: https://img.shields.io/waffle/label/AndresMWeber/Forge/in%20progress.svg
     :target: https://waffle.io/AndresMWeber/Forge
     
