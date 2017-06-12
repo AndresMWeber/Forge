@@ -1,8 +1,4 @@
-import nomenclate
 import maya.cmds as mc
-from . import transformation
-
-nom = nomenclate.Nom()
 
 
 def list_hierarchy(topJoint, withEndJoints=True):

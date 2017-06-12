@@ -62,17 +62,3 @@ class TestUtilsMayaListHierarchy(TestBaseUtilsMayaJoint):
         self.assertRaises(ValueError, utils_joint.list_hierarchy, 'not_me')
 
 
-class TestUtilsMayaMakeJointsAlongCurve(TestBaseUtilsMayaJoint):
-    pass
-
-
-class TestUtilsMayaBuildFromPoints(TestBaseUtilsMayaJoint):
-    pass
-
-
-class TestUtilsMayaBuildBetweenPoints(TestBaseUtilsMayaJoint):
-    pass
-
-
-class TestUtilsMayaInsertBetweenPoints(TestBaseUtilsMayaJoint):
-    pass
