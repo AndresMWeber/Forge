@@ -1,9 +1,6 @@
 from .base_test import TestBase
-import maya.standalone as ms
 import maya.cmds as mc
 import forge
-
-ms.initialize(name='forge')
 
 
 class TestTransformRename(TestBase):
